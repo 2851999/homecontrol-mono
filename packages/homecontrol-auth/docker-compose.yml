@@ -1,0 +1,8 @@
+services:
+  homecontrol-auth:
+    build: .
+    working_dir: /homecontrol-auth
+    volumes:
+      - ./:/homecontrol-auth
+    ports:
+      - "8000:8000"

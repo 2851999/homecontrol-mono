@@ -165,16 +165,37 @@ class CommandUpdateRequirements(BaseCommand):
                 capture_output=True,
             )
             requirements = result.stdout.decode().split("\n")
+
+            # Requirements for production
             with open(
                 package_dir / "requirements.txt", "w", encoding="utf-8"
             ) as requirements_file:
                 for requirement in requirements:
-                    if (
-                        requirement
-                        and "git+ssh://git@github.com/2851999/homecontrol-mono.git"
-                        not in requirement
-                    ):
-                        requirements_file.write(requirement + "\n")
+                    if requirement and package_name not in requirement:
+                        if (
+                            "git+ssh://git@github.com/2851999/homecontrol-mono.git"
+                            in requirement
+                        ):
+                            requirements_file.write(
+                                requirement.replace("-e ", "") + "\n"
+                            )
+                        else:
+                            requirements_file.write(requirement + "\n")
+
+            # Requirements for dev
+            with open(
+                package_dir / "requirements-dev.txt", "w", encoding="utf-8"
+            ) as requirements_file:
+                for requirement in requirements:
+                    if requirement and package_name not in requirement:
+                        if (
+                            "git+ssh://git@github.com/2851999/homecontrol-mono.git"
+                            in requirement
+                        ):
+                            dev_package = requirement.split("=")[-1]
+                            requirements_file.write(f"./{dev_package}\n")
+                        else:
+                            requirements_file.write(requirement + "\n")
 
 
 COMMANDS: dict[str, BaseCommand] = {
