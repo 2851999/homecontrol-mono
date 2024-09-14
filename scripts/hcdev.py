@@ -188,13 +188,11 @@ class CommandUpdateRequirements(BaseCommand):
             ) as requirements_file:
                 for requirement in requirements:
                     if requirement and package_name not in requirement:
+                        # Remove local requirements as will load them via a volume in Docker compose
                         if (
                             "git+ssh://git@github.com/2851999/homecontrol-mono.git"
-                            in requirement
+                            not in requirement
                         ):
-                            dev_package = requirement.split("=")[-1]
-                            requirements_file.write(f"./{dev_package}\n")
-                        else:
                             requirements_file.write(requirement + "\n")
 
 
