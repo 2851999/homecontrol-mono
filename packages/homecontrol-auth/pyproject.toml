@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "homecontrol-auth"
+version = "0.0.1"
+authors = [{ name = "2851999", email = "2851999@users.noreply.github.com" }]
+description = "A REST API providing authentication for HomeControl."
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "homecontrol-base-api",
+    # "homecontrol-base-api@git+https://github.com/2851999/homecontrol-mono#egg=main&subdirectory=packages/homecontrol-base-api",
+]
