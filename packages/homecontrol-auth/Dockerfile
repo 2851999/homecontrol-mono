@@ -6,6 +6,7 @@ WORKDIR /homecontrol-auth
 COPY requirements-dev.txt /homecontrol-auth/requirements.txt
 
 RUN pip install --no-cache-dir --upgrade -r /homecontrol-auth/requirements.txt
+# RUN pip install psycopg2-binary
 
 COPY homecontrol_auth /homecontrol-auth/homecontrol_auth
 
