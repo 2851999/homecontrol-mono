@@ -18,3 +18,6 @@ dependencies = [
     "homecontrol-base-api",
     # "homecontrol-base-api@git+https://github.com/2851999/homecontrol-mono#egg=main&subdirectory=packages/homecontrol-base-api",
 ]
+
+[tool.setuptools]
+packages = ["homecontrol_auth"]

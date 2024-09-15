@@ -14,4 +14,11 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["fastapi[standard]"]
+dependencies = ["fastapi[standard]", "SQLAlchemy"]
+
+[project.optional-dependencies]
+dev = ["black"]
+
+
+[tool.setuptools]
+packages = ["homecontrol_base_api"]

@@ -18,11 +18,18 @@ PACKAGES_DIRECTORY = Path("./packages")
 def run_shell_command(args: list[str], capture_output: bool = False):
     """Run a shell command"""
 
-    return subprocess.run(
+    logger.debug("Running command '%s'", " ".join([str(arg) for arg in args]))
+    result = subprocess.run(
         args,
-        check=True,
+        check=False,
         capture_output=capture_output,
     )
+    if result.stdout:
+        logger.debug(result.stdout.decode())
+    if result.stderr:
+        logger.debug(result.stderr.decode())
+    result.check_returncode()
+    return result
 
 
 def get_package_dependencies(package_dir: Path) -> list[str]:
@@ -88,6 +95,25 @@ def setup_venv(package_name: str):
             "install",
             "-e",
             package_dir,
+        ],
+        capture_output=True,
+    )
+
+
+def install_optional_dependencies(package_name: str, key: str):
+    """
+    Installs optional dependencies to a specific package's venv
+    """
+
+    package_dir = PACKAGES_DIRECTORY / package_name
+    run_shell_command(
+        [
+            f"{package_dir}/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-e",
+            f"{package_dir}[{key}]",
         ],
         capture_output=True,
     )
@@ -182,6 +208,21 @@ class CommandUpdateRequirements(BaseCommand):
                         else:
                             requirements_file.write(requirement + "\n")
 
+            # Also install any dev dependencies before doing the dev dependencies
+            install_optional_dependencies(package_name, "dev")
+
+            # Save the result of pip freeze in a requirements.txt
+            result = run_shell_command(
+                [
+                    f"{package_dir}/.venv/bin/python",
+                    "-m",
+                    "pip",
+                    "freeze",
+                ],
+                capture_output=True,
+            )
+            requirements = result.stdout.decode().split("\n")
+
             # Requirements for dev
             with open(
                 package_dir / "requirements-dev.txt", "w", encoding="utf-8"
@@ -208,6 +249,9 @@ def main():
     parser = ArgumentParser(
         prog="hcdev", description="Script to aid with HomeControl development"
     )
+    parser.add_argument(
+        "--debug", action="store_true", help="Expand logging to debug logs"
+    )
     subparsers = parser.add_subparsers(
         title="Subcommands", help="Subcommand help", dest="subcommand", required=True
     )
@@ -217,10 +261,13 @@ def main():
         subparser = subparsers.add_parser(command_key, help=command.help)
         command.add_arguments(subparser)
 
-    logging.basicConfig(level=logging.INFO)
-
-    # Parse and initiate the command
     args = parser.parse_args()
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
+
+    # Initiate the command
     COMMANDS[args.subcommand].run(args)
 
 
