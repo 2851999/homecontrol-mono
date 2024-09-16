@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from homecontrol_base_api.config.core import load_config
+from homecontrol_base_api.database.core import DatabaseSession, get_database
 
 # @dataclass
 # class TestConfigData:
@@ -34,14 +35,7 @@ class TestModel(Base):
     id = Column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
 
 
-class DatabaseConnection:
-    _session: AsyncSession
-
-    def __init__(self, session: AsyncSession):
-        self._session = session
-
-
-class TestDatabaseConnection(DatabaseConnection):
+class TestDatabaseSession(DatabaseSession):
     async def create(self):
         data = TestModel(id=uuid.uuid4())
         self._session.add(data)
@@ -50,73 +44,13 @@ class TestDatabaseConnection(DatabaseConnection):
         return data
 
 
-TDatabaseConnection = TypeVar("TDatabaseConnection", bound=DatabaseConnection)
-
-# See https://medium.com/@tclaitken/setting-up-a-fastapi-app-with-async-sqlalchemy-2-0-pydantic-v2-e6c540be4308 on how to use for FastAPI
-# and https://praciano.com.br/fastapi-and-async-sqlalchemy-20-with-pytest-done-right.html
-
-
-class Database(Generic[TDatabaseConnection]):
-
-    _engine: AsyncEngine
-    _session_maker: sessionmaker
-    _connection_type = Type[TDatabaseConnection]
-
-    def __init__(self, connection_type: Type[TDatabaseConnection]):
-        self._engine = create_async_engine("sqlite+aiosqlite:///database.db")
-        self._session_maker = sessionmaker(
-            self._engine, expire_on_commit=False, class_=AsyncSession
-        )
-        self._connection_type = connection_type
-
-    async def _init(self):
-        """This method is required in order to be able to call async methods"""
-        async with self._engine.begin() as conn:
+async def async_main():
+    async with get_database(TestDatabaseSession) as database:
+        async with database.connect() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
-    async def _del(self):
-        await self._engine.dispose()
-        self._engine = None
-        self._session_maker = None
-
-    @asynccontextmanager
-    async def connect(self) -> AsyncGenerator[TDatabaseConnection, None]:
-        async with self._session_maker() as session:
-            try:
-                await session.begin()
-                yield self._connection_type(session)
-            finally:
-                await session.close()
-
-
-# # Effectively would need the following for a service
-# database: Database = Database()
-
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     yield
-#     if database._engine is not None:
-#         # Close the DB connection
-#         await database.close()
-
-
-# Or this for an individual invocation
-@asynccontextmanager
-async def get_database(
-    connection_type: Type[TDatabaseConnection],
-) -> AsyncGenerator[Database[TDatabaseConnection], None]:
-    database = Database[TDatabaseConnection](connection_type)
-    await database._init()
-    try:
-        yield database
-    finally:
-        await database._del()
-
-
-async def async_main():
-    async with get_database(TestDatabaseConnection) as database:
-        async with database.connect() as conn:
-            await conn.create()
+        async with database.start_session() as session:
+            await session.create()
 
 
 asyncio.run(async_main())

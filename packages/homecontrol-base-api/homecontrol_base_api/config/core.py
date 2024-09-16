@@ -5,7 +5,8 @@ from pydantic.dataclasses import dataclass
 
 
 def _get_search_paths(local_file_path: Path) -> list[Path]:
-    """Returns a list of paths to search for config (in order they would
+    """
+    Returns a list of paths to search for config (in order they would
     be used)
 
     First attempts to look in the current directory, then if it doesn't
@@ -41,6 +42,7 @@ TDataclass = TypeVar("TDataclass", bound=dataclass)
 
 def load_config(local_file_path: str, dataclass_type: Type[TDataclass]) -> TDataclass:
     """Loads the config from a json file"""
+
     file_path = _locate_config_file(Path(local_file_path))
     with open(file_path, "r", encoding="utf-8") as file:
         return dataclass_type(**json.load(file))
