@@ -3,7 +3,7 @@ from homecontrol_auth.database.models import UserInDB
 from homecontrol_base_api.database.core import DatabaseSession
 from sqlalchemy.exc import IntegrityError
 
-from homecontrol_base_api.database.exceptions import DuplicateRecordError
+from homecontrol_base_api.exceptions import DuplicateRecordError
 
 class UsersSession(DatabaseSession):
     """Handles users in the database"""
@@ -13,6 +13,7 @@ class UsersSession(DatabaseSession):
         
         :param user: User to create
         :returns: Created user
+        :raises DuplicateRecordError: If a user with the same username already exists
         """
 
         self._session.add(user)
@@ -20,7 +21,7 @@ class UsersSession(DatabaseSession):
             await self._session.commit()
         except IntegrityError as exc:
             await self._session.rollback()
-            raise DuplicateRecordError(f"User with username {user.username} already exists") from exc
+            raise DuplicateRecordError(f"User with username '{user.username}' already exists") from exc
         await self._session.refresh(user)
         return user
     
