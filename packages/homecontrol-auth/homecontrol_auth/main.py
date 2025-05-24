@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-import homecontrol_base_api
+from homecontrol_auth.routers.users import users
 
 app = FastAPI()
+
+app.include_router(users)
 
 
 @app.get("/")

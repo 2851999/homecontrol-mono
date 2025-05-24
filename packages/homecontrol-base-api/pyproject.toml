@@ -14,7 +14,12 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["fastapi[standard]", "SQLAlchemy[asyncio]"]
+dependencies = [
+    "fastapi[standard]",
+    "SQLAlchemy[asyncio]",
+    # TODO: Only needed for sqlite
+    "aiosqlite"
+]
 
 [project.optional-dependencies]
 dev = ["black"]

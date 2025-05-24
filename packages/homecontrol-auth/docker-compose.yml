@@ -11,8 +11,8 @@ services:
   #     - ./postgres/data:/var/lib/postgresql/data
 
   homecontrol-auth:
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     build: .
     working_dir: /homecontrol-auth
     volumes:

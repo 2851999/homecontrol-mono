@@ -1,3 +1,4 @@
+aiosqlite==0.21.0
 annotated-types==0.7.0
 anyio==4.9.0
 certifi==2025.4.26
@@ -8,7 +9,7 @@ fastapi==0.115.12
 fastapi-cli==0.0.7
 greenlet==3.2.2
 h11==0.16.0
-git+ssh://git@github.com/2851999/homecontrol-mono.git@ade68716e19289647de2e41f50b0fa4567b4ec3d#egg=homecontrol_base_api&subdirectory=packages/homecontrol-base-api
+git+ssh://git@github.com/2851999/homecontrol-mono.git@49cd5869ffed1ff3136075648a61cb96c0b1ea24#egg=homecontrol_base_api&subdirectory=packages/homecontrol-base-api
 httpcore==1.0.9
 httptools==0.6.4
 httpx==0.28.1
