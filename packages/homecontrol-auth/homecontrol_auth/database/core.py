@@ -1,8 +1,8 @@
-
 from typing import Optional
 from homecontrol_auth.database.users import UsersSession
 from homecontrol_base_api.database.core import Database, DatabaseSession, get_database
 from homecontrol_auth.config import settings
+
 
 class AuthDatabaseSession(DatabaseSession):
     """Handles an authentication database session"""

@@ -9,7 +9,7 @@ fastapi==0.115.12
 fastapi-cli==0.0.7
 greenlet==3.2.2
 h11==0.16.0
-git+ssh://git@github.com/2851999/homecontrol-mono.git@630892422b3ffac9be53586e375a12e808138220#egg=homecontrol_base_api&subdirectory=packages/homecontrol-base-api
+git+ssh://git@github.com/2851999/homecontrol-mono.git@269ff6207d3ae81656ef849da4611602005be6b9#egg=homecontrol_base_api&subdirectory=packages/homecontrol-base-api
 httpcore==1.0.9
 httptools==0.6.4
 httpx==0.28.1

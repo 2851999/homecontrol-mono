@@ -7,6 +7,7 @@ from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_base_api.database.core import Database, get_database
 from homecontrol_auth.config import settings
 
+
 class AuthService:
     """Service that handles authentication"""
 
@@ -15,14 +16,13 @@ class AuthService:
     _users: Optional[UsersService] = None
 
     def __init__(self, session: AuthDatabaseSession):
-        self._session = session;
+        self._session = session
 
     @property
     def users(self) -> UsersService:
         if not self._users:
             self._users = UsersService(self._session)
         return self._users
-    
 
 
 # TODO: Put this and dependency in a dependencies file like old homecontrol-api?

@@ -1,4 +1,3 @@
-
 from datetime import datetime
 from uuid import UUID, uuid4
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -8,8 +7,10 @@ from sqlalchemy.types import Uuid, String, Boolean, DateTime
 class Base(DeclarativeBase):
     pass
 
+
 class UserInDB(Base):
     """User in the database"""
+
     __tablename__ = "users"
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
@@ -17,6 +18,7 @@ class UserInDB(Base):
     hashed_password: Mapped[str] = mapped_column(String)
     account_type: Mapped[str] = mapped_column(String)
     enabled: Mapped[bool] = mapped_column(Boolean)
+
 
 class UserSessionInDB(Base):
     """User session in the database"""

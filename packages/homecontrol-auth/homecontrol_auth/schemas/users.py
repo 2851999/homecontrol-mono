@@ -1,8 +1,8 @@
-
 from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict
 from homecontrol_base_api.types import StringUUID
+
 
 class UserAccountType(StrEnum):
     DEFAULT = "default"
@@ -16,6 +16,7 @@ class User(BaseModel):
     username: str
     account_type: UserAccountType
     enabled: bool
+
 
 class UserPost(BaseModel):
     username: str

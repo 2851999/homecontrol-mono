@@ -5,12 +5,13 @@ from sqlalchemy.exc import IntegrityError
 
 from homecontrol_base_api.exceptions import DuplicateRecordError
 
+
 class UsersSession(DatabaseSession):
     """Handles users in the database"""
 
     async def create(self, user: UserInDB) -> UserInDB:
         """Creates a user in the database
-        
+
         :param user: User to create
         :returns: Created user
         :raises DuplicateRecordError: If a user with the same username already exists
@@ -24,10 +25,10 @@ class UsersSession(DatabaseSession):
             raise DuplicateRecordError(f"User with username '{user.username}' already exists") from exc
         await self._session.refresh(user)
         return user
-    
+
     async def count(self) -> int:
         """Counts the number of users
-        
+
         :returns: Number of users
         """
 

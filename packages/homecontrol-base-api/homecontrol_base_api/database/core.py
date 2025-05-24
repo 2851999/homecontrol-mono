@@ -35,9 +35,7 @@ class Database(Generic[TDatabaseSession]):
         """Initialise the database engine"""
 
         self._engine = create_async_engine(get_database_url(database_settings))
-        self._session_maker = sessionmaker(
-            self._engine, expire_on_commit=False, class_=AsyncSession
-        )
+        self._session_maker = sessionmaker(self._engine, expire_on_commit=False, class_=AsyncSession)
         self._session_type = session_type
 
     async def close(self):
@@ -68,8 +66,7 @@ class Database(Generic[TDatabaseSession]):
 
 @asynccontextmanager
 async def get_database(
-    session_type: Type[TDatabaseSession],
-    settings: DatabaseSettings
+    session_type: Type[TDatabaseSession], settings: DatabaseSettings
 ) -> AsyncGenerator[Database[TDatabaseSession], None]:
     """Returns a database instance"""
 

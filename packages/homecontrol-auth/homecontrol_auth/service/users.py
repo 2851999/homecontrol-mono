@@ -13,7 +13,7 @@ class UsersService:
 
     async def create(self, user: UserPost) -> User:
         """Creates a user
-        
+
         :param user: User to create
         :returns: Created user
         """
@@ -22,6 +22,13 @@ class UsersService:
         is_first_user = await self._session.users.count() == 0
 
         # TODO: Handle errors
-        user_out = await self._session.users.create(UserInDB(username=user.username, hashed_password="SOMETHING", account_type=UserAccountType.ADMIN if is_first_user else UserAccountType.DEFAULT, enabled=is_first_user))
+        user_out = await self._session.users.create(
+            UserInDB(
+                username=user.username,
+                hashed_password="SOMETHING",
+                account_type=UserAccountType.ADMIN if is_first_user else UserAccountType.DEFAULT,
+                enabled=is_first_user,
+            )
+        )
 
         return User.model_validate(user_out)

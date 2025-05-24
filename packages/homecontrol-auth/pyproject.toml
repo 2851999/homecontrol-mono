@@ -19,5 +19,8 @@ dependencies = [
     # "homecontrol-base-api@git+https://github.com/2851999/homecontrol-mono#egg=main&subdirectory=packages/homecontrol-base-api",
 ]
 
+[project.optional-dependencies]
+dev = ["black"]
+
 [tool.setuptools]
 packages = ["homecontrol_auth"]
