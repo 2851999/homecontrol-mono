@@ -17,6 +17,7 @@ classifiers = [
 dependencies = [
     "fastapi[standard]",
     "SQLAlchemy[asyncio]",
+    "pydantic-settings",
     # TODO: Only needed for sqlite
     "aiosqlite"
 ]

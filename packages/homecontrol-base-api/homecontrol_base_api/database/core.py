@@ -5,6 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine, AsyncConnection
 from sqlalchemy.ext.asyncio import create_async_engine
 
+from homecontrol_base_api.config.core import DatabaseSettings, get_database_url
+
 
 class DatabaseSession:
     """Base class for handling a database session"""
@@ -29,10 +31,10 @@ class Database(Generic[TDatabaseSession]):
     _session_maker: sessionmaker
     _session_type = Type[TDatabaseSession]
 
-    def __init__(self, session_type: Type[TDatabaseSession]):
+    def __init__(self, session_type: Type[TDatabaseSession], database_settings: DatabaseSettings):
         """Initialise the database engine"""
 
-        self._engine = create_async_engine("sqlite+aiosqlite:///database.db")
+        self._engine = create_async_engine(get_database_url(database_settings))
         self._session_maker = sessionmaker(
             self._engine, expire_on_commit=False, class_=AsyncSession
         )
@@ -67,10 +69,11 @@ class Database(Generic[TDatabaseSession]):
 @asynccontextmanager
 async def get_database(
     session_type: Type[TDatabaseSession],
+    settings: DatabaseSettings
 ) -> AsyncGenerator[Database[TDatabaseSession], None]:
     """Returns a database instance"""
 
-    database = Database(session_type)
+    database = Database(session_type, settings)
     try:
         yield database
     finally:

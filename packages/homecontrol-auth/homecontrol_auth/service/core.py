@@ -5,6 +5,7 @@ from fastapi import Depends
 from homecontrol_auth.service.users import UsersService
 from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_base_api.database.core import Database, get_database
+from homecontrol_auth.config import settings
 
 class AuthService:
     """Service that handles authentication"""
@@ -29,7 +30,7 @@ class AuthService:
 async def get_auth_service() -> AsyncGenerator[AuthService, None]:
     """Creates an instance of HomeControlAPIService (for use in scripts)"""
 
-    async with get_database(AuthDatabaseSession) as database:
+    async with get_database(AuthDatabaseSession, settings.database) as database:
         async with database.start_session() as session:
             yield AuthService(session)
 

@@ -18,5 +18,8 @@ services:
     volumes:
       - ../homecontrol-base-api/homecontrol_base_api:/usr/local/lib/python3.12/site-packages/homecontrol_base_api:ro
       - ./:/homecontrol-auth
+    environment:
+      - DATABASE__DRIVER=sqlite+aiosqlite
+      - DATABASE__NAME=database.db
     ports:
       - "8000:8000"
