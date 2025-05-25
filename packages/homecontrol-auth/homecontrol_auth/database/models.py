@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import UUID, uuid4
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.types import Uuid, String, Boolean, DateTime
+from sqlalchemy.types import Uuid, String, Boolean, DateTime, LargeBinary
 
 
 class Base(DeclarativeBase):
@@ -15,7 +15,7 @@ class UserInDB(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     username: Mapped[str] = mapped_column(String, unique=True, index=True)
-    hashed_password: Mapped[str] = mapped_column(String)
+    hashed_password: Mapped[bytes] = mapped_column(LargeBinary)
     account_type: Mapped[str] = mapped_column(String)
     enabled: Mapped[bool] = mapped_column(Boolean)
 

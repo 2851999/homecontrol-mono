@@ -8,20 +8,22 @@ from homecontrol_base_api.config.core import DatabaseSettings, get_database_url
 from homecontrol_base_api.database.core import get_database
 from homecontrol_auth.service.core import AuthService, get_auth_service
 from homecontrol_auth.schemas.users import UserPost
-from homecontrol_auth.config import Settings
+from homecontrol_auth.config import settings
+
+async def async_main():
+    async with get_database(AuthDatabaseSession, settings.database) as database:
+        async with database.connect() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+
+        # async with get_auth_service() as auth_service:
+        #     user = await auth_service.users.create(UserPost(username="Test2", password="Test2"))
+        #     print(user)
+
+        # async with database.start_session() as session:
+        #     print((await session.users.get_by_username("Test2")).username)
 
 
-# async def async_main():
-#     async with get_database(AuthDatabaseSession) as database:
-#         async with database.connect() as conn:
-#             await conn.run_sync(Base.metadata.create_all)
-
-#         # async with get_auth_service(database) as auth_service:
-#         #     user = await auth_service.users.create(UserPost(username="Test2", password="Test2"))
-#         #     print(user)
-
-
-# asyncio.run(async_main())
-settings = Settings()
-print(settings)
-print(get_database_url(settings.database))
+asyncio.run(async_main())
+# settings = Settings()
+# print(settings)
+# print(get_database_url(settings.database))

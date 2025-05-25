@@ -25,10 +25,8 @@ class AuthService:
         return self._users
 
 
-# TODO: Put this and dependency in a dependencies file like old homecontrol-api?
-# TODO: Put in base like get_database
 async def get_auth_service() -> AsyncGenerator[AuthService, None]:
-    """Creates an instance of HomeControlAPIService (for use in scripts)"""
+    """Creates an instance of the auth service"""
 
     async with get_database(AuthDatabaseSession, settings.database) as database:
         async with database.start_session() as session:

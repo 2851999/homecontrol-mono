@@ -25,6 +25,15 @@ class UsersSession(DatabaseSession):
             raise DuplicateRecordError(f"User with username '{user.username}' already exists") from exc
         await self._session.refresh(user)
         return user
+    
+    async def get_by_username(self, username: str) -> UserInDB:
+        """Returns a user from the database given their username
+        
+        :param username: Username of the user to get
+        :returns: The User
+        """
+
+        return (await self._session.execute(select(UserInDB).where(UserInDB.username == username))).scalar_one() 
 
     async def count(self) -> int:
         """Counts the number of users

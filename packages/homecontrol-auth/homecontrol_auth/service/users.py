@@ -1,6 +1,7 @@
 from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_auth.schemas.users import User, UserAccountType, UserPost
 from homecontrol_auth.database.models import UserInDB
+from homecontrol_auth import security
 
 
 class UsersService:
@@ -21,11 +22,11 @@ class UsersService:
         # Check if its the first user
         is_first_user = await self._session.users.count() == 0
 
-        # TODO: Handle errors
+        # Create the user
         user_out = await self._session.users.create(
             UserInDB(
                 username=user.username,
-                hashed_password="SOMETHING",
+                hashed_password=security.hash_password(user.password.get_secret_value()),
                 account_type=UserAccountType.ADMIN if is_first_user else UserAccountType.DEFAULT,
                 enabled=is_first_user,
             )
