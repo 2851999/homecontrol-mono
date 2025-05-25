@@ -1,9 +1,9 @@
-from sqlalchemy import func, select
+from sqlalchemy import func, select, exc
 from homecontrol_auth.database.models import UserInDB
 from homecontrol_base_api.database.core import DatabaseSession
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy import exc
 
-from homecontrol_base_api.exceptions import DuplicateRecordError
+from homecontrol_base_api.exceptions import DuplicateRecordError, NoRecordFound
 
 
 class UsersSession(DatabaseSession):
@@ -20,7 +20,7 @@ class UsersSession(DatabaseSession):
         self._session.add(user)
         try:
             await self._session.commit()
-        except IntegrityError as exc:
+        except exc.IntegrityError as exc:
             await self._session.rollback()
             raise DuplicateRecordError(f"User with username '{user.username}' already exists") from exc
         await self._session.refresh(user)
@@ -31,9 +31,13 @@ class UsersSession(DatabaseSession):
         
         :param username: Username of the user to get
         :returns: The User
+        :raises NoRecordFound: If a user with the given username is not found in the database
         """
 
-        return (await self._session.execute(select(UserInDB).where(UserInDB.username == username))).scalar_one() 
+        try:
+            return (await self._session.execute(select(UserInDB).where(UserInDB.username == username))).scalar_one()
+        except exc.NoResultFound:
+            raise NoRecordFound(f"No user found with the username '{username}'")
 
     async def count(self) -> int:
         """Counts the number of users

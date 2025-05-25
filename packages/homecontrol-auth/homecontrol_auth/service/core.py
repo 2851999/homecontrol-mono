@@ -6,6 +6,7 @@ from homecontrol_auth.service.users import UsersService
 from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_base_api.database.core import Database, get_database
 from homecontrol_auth.config import settings
+from homecontrol_auth.service.user_sessions import UserSessionsService
 
 
 class AuthService:
@@ -14,6 +15,7 @@ class AuthService:
     _session: AuthDatabaseSession
 
     _users: Optional[UsersService] = None
+    _user_sessions: Optional[UserSessionsService] = None
 
     def __init__(self, session: AuthDatabaseSession):
         self._session = session
@@ -23,6 +25,12 @@ class AuthService:
         if not self._users:
             self._users = UsersService(self._session)
         return self._users
+
+    @property
+    def user_sessions(self) -> UserSessionsService:
+        if not self._user_sessions:
+            self._user_sessions = UserSessionsService(self._session)
+        return self._user_sessions
 
 
 async def get_auth_service() -> AsyncGenerator[AuthService, None]:
