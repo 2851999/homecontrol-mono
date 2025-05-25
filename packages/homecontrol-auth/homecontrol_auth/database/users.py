@@ -1,7 +1,7 @@
-from sqlalchemy import func, select, exc
+from uuid import UUID
+from sqlalchemy import func, select, exc as sqlalchemy_exc
 from homecontrol_auth.database.models import UserInDB
 from homecontrol_base_api.database.core import DatabaseSession
-from sqlalchemy import exc
 
 from homecontrol_base_api.exceptions import DuplicateRecordError, NoRecordFound
 
@@ -20,12 +20,26 @@ class UsersSession(DatabaseSession):
         self._session.add(user)
         try:
             await self._session.commit()
-        except exc.IntegrityError as exc:
+        except sqlalchemy_exc.IntegrityError as exc:
             await self._session.rollback()
             raise DuplicateRecordError(f"User with username '{user.username}' already exists") from exc
         await self._session.refresh(user)
         return user
     
+    async def get(self, user_id: str) -> UserInDB:
+        """Returns a user from the database given its ID
+        
+        :param user_id: ID of the user to get
+        :returns: The user
+        :raises NoRecordFound: If the user with the given ID is not found in the database
+        """
+
+        try:
+            return (await self._session.execute(select(UserInDB).where(UserInDB.id == UUID(user_id)))).scalar_one()
+        except sqlalchemy_exc.NoResultFound:
+            raise NoRecordFound(f"No user found with the ID '{user_id}'")
+
+
     async def get_by_username(self, username: str) -> UserInDB:
         """Returns a user from the database given their username
         
@@ -36,7 +50,7 @@ class UsersSession(DatabaseSession):
 
         try:
             return (await self._session.execute(select(UserInDB).where(UserInDB.username == username))).scalar_one()
-        except exc.NoResultFound:
+        except sqlalchemy_exc.NoResultFound:
             raise NoRecordFound(f"No user found with the username '{username}'")
 
     async def count(self) -> int:

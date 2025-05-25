@@ -5,7 +5,7 @@ from fastapi import Response
 from homecontrol_auth.database.core import AuthDatabaseSession
 
 from homecontrol_auth.schemas.user_sessions import InternalUserSession, LoginPost, UserSession
-from homecontrol_auth.security import generate_jwt, verify_password
+from homecontrol_auth.security import generate_jwt, verify_jwt, verify_password
 from homecontrol_auth.exceptions import AuthenticationError
 from homecontrol_auth.database.models import UserInDB, UserSessionInDB
 from homecontrol_auth.config import settings
@@ -108,3 +108,22 @@ class UserSessionsService:
         self._assign_internal_session_tokens(internal_user_session, response)
 
         return UserSession.model_validate(internal_user_session)
+    
+    async def authenticate_session(self, access_token: str) -> UserSession:
+        """Authenticate a user session given its access token
+        
+        :param access_token: Access token from the session to verify
+        :returns: The user sesssion
+        """
+
+        # Verify the token
+        payload = verify_jwt(access_token, settings.secret_key.get_secret_value())
+
+        # Obtain the session to which it belongs
+        user_session = await self._session.user_sessions.get(payload["session_id"])
+
+        # Verify the token is the current one for the session
+        if user_session.access_token != access_token:
+            raise AuthenticationError("Invalid token")
+        
+        return UserSession.model_validate(user_session)

@@ -12,6 +12,8 @@ class LoginPost(UserPost):
 class UserSession(BaseModel):
     """Schema for a user session"""
     
+    model_config = ConfigDict(from_attributes=True)
+
     id: StringUUID
     user_id: StringUUID
 

@@ -1,4 +1,3 @@
-from datetime import datetime, timedelta, timezone
 from typing import Any
 import bcrypt
 import jwt
@@ -25,6 +24,6 @@ def verify_jwt(token: str, key: str) -> dict[str, Any]:
     """Verifies whether a jwt is valid and returns its payload"""
 
     try:
-        payload = jwt.decode(jwt=token, key=key, algorithms=["HS256"])
+        return jwt.decode(jwt=token, key=key, algorithms=["HS256"])
     except jwt.exceptions.ExpiredSignatureError:
         raise AuthenticationError("Token has expired")

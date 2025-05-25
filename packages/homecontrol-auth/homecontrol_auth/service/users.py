@@ -33,3 +33,12 @@ class UsersService:
         )
 
         return User.model_validate(user_out)
+    
+    async def get(self, user_id: str) -> User:
+        """Returns a user given its ID
+        
+        :param user_id: ID of the user to get
+        :returns: The user
+        """
+
+        return User.model_validate(await self._session.users.get(user_id))

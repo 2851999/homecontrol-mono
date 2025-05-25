@@ -4,9 +4,11 @@ from typing import Annotated, AsyncGenerator, Optional
 from fastapi import Depends
 from homecontrol_auth.service.users import UsersService
 from homecontrol_auth.database.core import AuthDatabaseSession
-from homecontrol_base_api.database.core import Database, get_database
+from homecontrol_base_api.database.core import get_database
 from homecontrol_auth.config import settings
 from homecontrol_auth.service.user_sessions import UserSessionsService
+from homecontrol_auth.schemas.users import User
+from homecontrol_auth.exceptions import AuthenticationError
 
 
 class AuthService:
@@ -32,7 +34,22 @@ class AuthService:
             self._user_sessions = UserSessionsService(self._session)
         return self._user_sessions
 
+    async def authenticate(self, access_token: str) -> User:
+        """Authenticates given an access token
+        
+        :param access_token: Access token to authenticate
+        :returns: The user
+        """
+        user_session = await self.user_sessions.authenticate_session(access_token)
+        user = await self.users.get(user_session.user_id)
 
+        if not user.enabled:
+            raise AuthenticationError("User is disabled")
+        
+        return user
+
+
+# TODO: Move into dependencies?
 async def get_auth_service() -> AsyncGenerator[AuthService, None]:
     """Creates an instance of the auth service"""
 
