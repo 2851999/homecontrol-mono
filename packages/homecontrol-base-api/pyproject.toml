@@ -18,8 +18,9 @@ dependencies = [
     "fastapi[standard]",
     "SQLAlchemy[asyncio]",
     "pydantic-settings",
+    "alembic",
     # TODO: Only needed for sqlite
-    "aiosqlite"
+    "aiosqlite",
 ]
 
 [project.optional-dependencies]

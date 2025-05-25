@@ -10,4 +10,9 @@ RUN pip install --no-cache-dir --upgrade -r /homecontrol-auth/requirements.txt
 
 COPY homecontrol_auth /homecontrol-auth/homecontrol_auth
 
-CMD ["fastapi", "dev", "homecontrol_auth/main.py", "--host", "0.0.0.0", "--port", "8000"]
+COPY alembic /homecontrol-auth/alembic
+COPY alembic.ini /homecontrol-auth/alembic.ini
+
+COPY docker-entrypoint.sh /homecontrol-auth/docker-entrypoint.sh
+
+ENTRYPOINT [ "/homecontrol-auth/docker-entrypoint.sh" ] 
