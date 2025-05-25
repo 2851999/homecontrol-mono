@@ -38,7 +38,7 @@ class UserSessionsSession(DatabaseSession):
             raise NoRecordFound(f"No user session found with the ID '{session_id}'")
 
     async def update(self, user_session: UserSessionInDB) -> UserSessionInDB:
-        """Returns a user session from the database given its ID
+        """Updates a user session by commiting any changes to the database
 
         :param user_session: User session to update
         :returns: The user session

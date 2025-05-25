@@ -2,6 +2,7 @@ from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import DuplicateRecordError, NoRecordFound
+from sqlalchemy import delete
 from sqlalchemy import exc as sqlalchemy_exc
 from sqlalchemy import func, select
 
@@ -69,3 +70,23 @@ class UsersSession(DatabaseSession):
         """
 
         return (await self._session.execute(select(UserInDB))).scalars().all()
+
+    async def update(self, user: UserInDB) -> UserInDB:
+        """Updates a user by commiting any changes to the database
+
+        :param user: User to update
+        :returns: The user
+        """
+
+        await self._session.commit()
+        await self._session.refresh(user)
+        return user
+
+    async def delete(self, user_id: str) -> None:
+        """Deletes a user from the database given its ID
+
+        :param user_id: ID of the user to delete
+        """
+
+        await self._session.execute(delete(UserInDB).where(UserInDB.id == UUID(user_id)))
+        await self._session.commit()

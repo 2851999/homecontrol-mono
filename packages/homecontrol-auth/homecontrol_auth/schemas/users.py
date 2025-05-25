@@ -1,4 +1,5 @@
 from enum import StrEnum
+from typing import Optional
 
 from homecontrol_base_api.types import StringUUID
 from pydantic import BaseModel, ConfigDict, SecretStr
@@ -27,3 +28,10 @@ class UserPost(BaseModel):
 
     username: str
     password: SecretStr
+
+
+class UserPatch(BaseModel):
+    """Schema for updating a user"""
+
+    account_type: Optional[UserAccountType] = None
+    enabled: Optional[bool] = None

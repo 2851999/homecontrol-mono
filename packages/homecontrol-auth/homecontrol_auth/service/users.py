@@ -3,7 +3,7 @@ from pydantic import TypeAdapter
 from homecontrol_auth import security
 from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_auth.database.models import UserInDB
-from homecontrol_auth.schemas.users import User, UserAccountType, UserPost
+from homecontrol_auth.schemas.users import User, UserAccountType, UserPatch, UserPost
 
 
 class UsersService:
@@ -52,3 +52,27 @@ class UsersService:
         """
 
         return TypeAdapter(list[User]).validate_python(await self._session.users.get_all())
+
+    async def update(self, user_id: str, user_patch: UserPatch) -> User:
+        """Updates a user
+
+        :param user_id: ID of the user to update
+        :param user_patch: Data to update in the user
+        """
+
+        user = await self._session.users.get(user_id)
+
+        update_data = user_patch.model_dump(exclude_unset=True)
+        print(update_data)
+        for key, value in update_data.items():
+            setattr(user, key, value)
+
+        return User.model_validate(await self._session.users.update(user))
+
+    async def delete(self, user_id: str) -> None:
+        """Delete a user given its ID
+
+        :param user_id: ID of the user to delete
+        """
+
+        await self._session.users.delete(user_id)
