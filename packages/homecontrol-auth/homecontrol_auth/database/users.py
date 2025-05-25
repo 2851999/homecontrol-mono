@@ -25,10 +25,10 @@ class UsersSession(DatabaseSession):
             raise DuplicateRecordError(f"User with username '{user.username}' already exists") from exc
         await self._session.refresh(user)
         return user
-    
+
     async def get(self, user_id: str) -> UserInDB:
         """Returns a user from the database given its ID
-        
+
         :param user_id: ID of the user to get
         :returns: The user
         :raises NoRecordFound: If the user with the given ID is not found in the database
@@ -39,10 +39,9 @@ class UsersSession(DatabaseSession):
         except sqlalchemy_exc.NoResultFound:
             raise NoRecordFound(f"No user found with the ID '{user_id}'")
 
-
     async def get_by_username(self, username: str) -> UserInDB:
         """Returns a user from the database given their username
-        
+
         :param username: Username of the user to get
         :returns: The User
         :raises NoRecordFound: If a user with the given username is not found in the database
@@ -60,3 +59,11 @@ class UsersSession(DatabaseSession):
         """
 
         return (await self._session.execute(select(func.count()).select_from(UserInDB))).scalar_one()
+
+    async def get_all(self) -> list[UserInDB]:
+        """Returns a list of users
+
+        :returns: List of users
+        """
+
+        return (await self._session.execute(select(UserInDB))).scalars().all()

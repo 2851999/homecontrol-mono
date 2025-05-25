@@ -1,3 +1,4 @@
+from pydantic import TypeAdapter
 from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_auth.schemas.users import User, UserAccountType, UserPost
 from homecontrol_auth.database.models import UserInDB
@@ -33,12 +34,20 @@ class UsersService:
         )
 
         return User.model_validate(user_out)
-    
+
     async def get(self, user_id: str) -> User:
         """Returns a user given its ID
-        
+
         :param user_id: ID of the user to get
         :returns: The user
         """
 
         return User.model_validate(await self._session.users.get(user_id))
+
+    async def get_all(self) -> list[User]:
+        """Returns a list of users
+
+        :returns: List of users
+        """
+
+        return TypeAdapter(list[User]).validate_python(await self._session.users.get_all())

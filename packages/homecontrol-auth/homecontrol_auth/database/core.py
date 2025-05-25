@@ -15,7 +15,7 @@ class AuthDatabaseSession(DatabaseSession):
         if not self._users:
             self._users = UsersSession(self._session)
         return self._users
-    
+
     @property
     def user_sessions(self) -> UserSessionsSession:
         if not self._user_sessions:
