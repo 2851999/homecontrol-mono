@@ -1,7 +1,9 @@
 from typing import Optional
-from homecontrol_auth.database.users import UsersSession
+
 from homecontrol_base_api.database.core import DatabaseSession
+
 from homecontrol_auth.database.user_sessions import UserSessionsSession
+from homecontrol_auth.database.users import UsersSession
 
 
 class AuthDatabaseSession(DatabaseSession):

@@ -1,5 +1,4 @@
 from fastapi import status
-
 from homecontrol_base_api.exceptions import BaseAPIError
 
 

@@ -1,9 +1,8 @@
 from fastapi import APIRouter, status
 
-from homecontrol_auth.schemas.users import UserPost, User
-from homecontrol_auth.service.core import AuthServiceDep
 from homecontrol_auth.dependencies import AdminUser
-
+from homecontrol_auth.schemas.users import User, UserPost
+from homecontrol_auth.service.core import AuthServiceDep
 
 users = APIRouter(prefix="/users", tags=["users"])
 

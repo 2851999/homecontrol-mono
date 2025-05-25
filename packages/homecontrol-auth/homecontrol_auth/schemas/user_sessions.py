@@ -1,7 +1,9 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict, SecretStr
-from homecontrol_auth.schemas.users import UserPost
+
 from homecontrol_base_api.types import StringUUID
+from pydantic import BaseModel, ConfigDict, SecretStr
+
+from homecontrol_auth.schemas.users import UserPost
 
 
 class LoginPost(UserPost):

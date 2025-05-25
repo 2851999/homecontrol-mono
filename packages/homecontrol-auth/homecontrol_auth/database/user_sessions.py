@@ -1,9 +1,10 @@
 from uuid import UUID
-from sqlalchemy import delete, select, exc
+
 from homecontrol_base_api.database.core import DatabaseSession
+from homecontrol_base_api.exceptions import NoRecordFound
+from sqlalchemy import delete, exc, select
 
 from homecontrol_auth.database.models import UserSessionInDB
-from homecontrol_base_api.exceptions import NoRecordFound
 
 
 class UserSessionsSession(DatabaseSession):

@@ -1,11 +1,11 @@
 from fastapi import FastAPI, Response, status
-from homecontrol_auth.routers.users import users
 from homecontrol_base_api.exceptions import BaseAPIError, handle_base_api_error
 
-from homecontrol_auth.schemas.user_sessions import LoginPost, UserSession
-from homecontrol_auth.service.core import AuthServiceDep
 from homecontrol_auth.dependencies import AnySession, AnyUser, RefreshToken
+from homecontrol_auth.routers.users import users
+from homecontrol_auth.schemas.user_sessions import LoginPost, UserSession
 from homecontrol_auth.schemas.users import User
+from homecontrol_auth.service.core import AuthServiceDep
 
 app = FastAPI()
 

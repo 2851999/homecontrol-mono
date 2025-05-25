@@ -1,9 +1,11 @@
 from uuid import UUID
-from sqlalchemy import func, select, exc as sqlalchemy_exc
-from homecontrol_auth.database.models import UserInDB
-from homecontrol_base_api.database.core import DatabaseSession
 
+from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import DuplicateRecordError, NoRecordFound
+from sqlalchemy import exc as sqlalchemy_exc
+from sqlalchemy import func, select
+
+from homecontrol_auth.database.models import UserInDB
 
 
 class UsersSession(DatabaseSession):

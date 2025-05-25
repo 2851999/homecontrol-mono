@@ -1,7 +1,8 @@
 from datetime import datetime
 from uuid import UUID, uuid4
+
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.types import Uuid, String, Boolean, DateTime, LargeBinary
+from sqlalchemy.types import Boolean, DateTime, LargeBinary, String, Uuid
 
 
 class Base(DeclarativeBase):

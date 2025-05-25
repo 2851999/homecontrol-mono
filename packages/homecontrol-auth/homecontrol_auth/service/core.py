@@ -2,14 +2,15 @@ from contextlib import asynccontextmanager
 from typing import Annotated, AsyncGenerator, Optional
 
 from fastapi import Depends
-from homecontrol_auth.service.users import UsersService
-from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_base_api.database.core import get_database
+
 from homecontrol_auth.config import settings
-from homecontrol_auth.service.user_sessions import UserSessionsService
-from homecontrol_auth.schemas.users import User
-from homecontrol_auth.schemas.user_sessions import UserSession
+from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_auth.exceptions import AuthenticationError
+from homecontrol_auth.schemas.user_sessions import UserSession
+from homecontrol_auth.schemas.users import User
+from homecontrol_auth.service.user_sessions import UserSessionsService
+from homecontrol_auth.service.users import UsersService
 
 
 class AuthService:

@@ -1,9 +1,10 @@
 from typing import Annotated
+
 from fastapi import Cookie, Depends
 
 from homecontrol_auth.exceptions import AuthenticationError, InsufficientPrivilegesError
-from homecontrol_auth.schemas.users import User, UserAccountType
 from homecontrol_auth.schemas.user_sessions import UserSession
+from homecontrol_auth.schemas.users import User, UserAccountType
 from homecontrol_auth.service.core import AuthServiceDep
 
 

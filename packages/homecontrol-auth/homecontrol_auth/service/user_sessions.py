@@ -2,15 +2,15 @@ from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from fastapi import Response
-from homecontrol_auth.database.core import AuthDatabaseSession
-
-from homecontrol_auth.schemas.user_sessions import InternalUserSession, LoginPost, UserSession
-from homecontrol_auth.security import generate_jwt, verify_jwt, verify_password
-from homecontrol_auth.exceptions import AuthenticationError
-from homecontrol_auth.database.models import UserInDB, UserSessionInDB
-from homecontrol_auth.config import settings
-from homecontrol_auth.schemas.users import UserAccountType
 from homecontrol_base_api.exceptions import NoRecordFound
+
+from homecontrol_auth.config import settings
+from homecontrol_auth.database.core import AuthDatabaseSession
+from homecontrol_auth.database.models import UserInDB, UserSessionInDB
+from homecontrol_auth.exceptions import AuthenticationError
+from homecontrol_auth.schemas.user_sessions import InternalUserSession, LoginPost, UserSession
+from homecontrol_auth.schemas.users import UserAccountType
+from homecontrol_auth.security import generate_jwt, verify_jwt, verify_password
 
 
 class UserSessionsService:

@@ -1,8 +1,9 @@
 from pydantic import TypeAdapter
-from homecontrol_auth.database.core import AuthDatabaseSession
-from homecontrol_auth.schemas.users import User, UserAccountType, UserPost
-from homecontrol_auth.database.models import UserInDB
+
 from homecontrol_auth import security
+from homecontrol_auth.database.core import AuthDatabaseSession
+from homecontrol_auth.database.models import UserInDB
+from homecontrol_auth.schemas.users import User, UserAccountType, UserPost
 
 
 class UsersService:

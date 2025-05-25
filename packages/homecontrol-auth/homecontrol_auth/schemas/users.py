@@ -1,7 +1,7 @@
 from enum import StrEnum
 
-from pydantic import BaseModel, ConfigDict, SecretStr
 from homecontrol_base_api.types import StringUUID
+from pydantic import BaseModel, ConfigDict, SecretStr
 
 
 class UserAccountType(StrEnum):

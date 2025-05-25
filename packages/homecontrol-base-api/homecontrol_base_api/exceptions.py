@@ -24,6 +24,7 @@ class NoRecordFound(DatabaseError):
 
     status_code = status.HTTP_404_NOT_FOUND
 
+
 def handle_base_api_error(_: Request, exc: BaseAPIError) -> JSONResponse:
     return JSONResponse(
         status_code=exc.status_code,

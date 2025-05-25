@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from typing import Optional, Type, TypeVar
+
 from pydantic import BaseModel, SecretStr
 from pydantic.dataclasses import dataclass
 from sqlalchemy import URL

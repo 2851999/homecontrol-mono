@@ -1,7 +1,6 @@
+from homecontrol_base_api.config.core import DatabaseSettings
 from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from homecontrol_base_api.config.core import DatabaseSettings
 
 
 class Settings(BaseSettings):
