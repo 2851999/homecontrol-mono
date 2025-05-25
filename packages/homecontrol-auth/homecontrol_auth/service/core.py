@@ -34,13 +34,13 @@ class AuthService:
             self._user_sessions = UserSessionsService(self._session)
         return self._user_sessions
 
-    async def authenticate(self, access_token: str) -> User:
-        """Authenticates given an access token
+    async def verify(self, access_token: str) -> User:
+        """Verifies given an access token
         
         :param access_token: Access token to authenticate
         :returns: The user
         """
-        user_session = await self.user_sessions.authenticate_session(access_token)
+        user_session = await self.user_sessions.verify_session(access_token)
         user = await self.users.get(user_session.user_id)
 
         if not user.enabled:

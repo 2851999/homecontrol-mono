@@ -34,3 +34,14 @@ class UserSessionsSession(DatabaseSession):
             return (await self._session.execute(select(UserSessionInDB).where(UserSessionInDB.id == UUID(session_id)))).scalar_one()
         except exc.NoResultFound:
             raise NoRecordFound(f"No user session found with the ID '{session_id}'")
+
+    async def update(self, user_session: UserSessionInDB) -> UserSessionInDB:
+        """Returns a user session from the database given its ID
+        
+        :param user_session: User session to update
+        :returns: The user session
+        """
+
+        await self._session.commit()
+        await self._session.refresh(user_session)
+        return user_session

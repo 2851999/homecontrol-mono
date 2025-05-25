@@ -24,13 +24,13 @@ def get_refresh_token_from_cookie(refresh_token: Annotated[str, Cookie()] = None
     return refresh_token
 
 AccessToken = Annotated[str, Depends(get_access_token_from_cookie)]
-RefreshToken = Annotated[str, Depends(get_access_token_from_cookie)]
+RefreshToken = Annotated[str, Depends(get_refresh_token_from_cookie)]
 
 
 async def verify_current_user(auth_service: AuthServiceDep, access_token: AccessToken) -> User:
     """Verifies the current user"""
 
-    return await auth_service.authenticate(access_token)
+    return await auth_service.verify(access_token)
 
 def _create_verify_user_type_dep(valid_account_type: UserAccountType):
     """Returns a dependency that validates the current user and ensures they also have a specific account type"""

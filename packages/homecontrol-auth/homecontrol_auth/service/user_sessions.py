@@ -30,7 +30,7 @@ class UserSessionsService:
 
         return generate_jwt(payload={"session_id": session_id, "exp": expiry_time}, key=settings.secret_key.get_secret_value())
 
-    async def _create_internal_user_session(self, user: UserInDB, long_lived: bool) -> InternalUserSession:
+    async def _create_internal(self, user: UserInDB, long_lived: bool) -> InternalUserSession:
         """Creates an internal user session
         
         :param user: User to create the session for
@@ -52,6 +52,25 @@ class UserSessionsService:
         )
 
         user_session = await self._session.user_sessions.create(user_session)
+        return InternalUserSession.model_validate(user_session)
+
+    async def _refresh_internal(self, user_session: UserSessionInDB) -> InternalUserSession:
+        """Refreshes an internal user session
+        
+        :param user: User to create the session for
+        :param long_lived: Whether the session should be long lived or not
+        :returns: The created internal user session
+        """
+
+        current_time = datetime.now(timezone.utc)
+        expiry_time = current_time + timedelta(seconds=settings.long_lived_refresh_token_expiry_seconds if user_session.long_lived else settings.refresh_token_expiry_seconds)
+
+
+        user_session.access_token = self._generate_token(str(user_session.id), current_time + timedelta(seconds=settings.access_token_expiry_seconds))
+        user_session.refresh_token = self._generate_token(str(user_session.id), expiry_time)
+        user_session.expiry_time = expiry_time
+
+        user_session = await self._session.user_sessions.update(user_session)
         return InternalUserSession.model_validate(user_session)
 
     def _assign_internal_session_tokens(self, internal_user_session: InternalUserSession, response: Response):
@@ -78,12 +97,13 @@ class UserSessionsService:
             httponly=True,
         )
 
-    async def create_session(self, login: LoginPost, response: Response) -> UserSession:
+    async def create(self, login: LoginPost, response: Response) -> UserSession:
         """Creates a user session
 
         :param login: Login information
         :param response: FastAPI response object to set the cookies on
         :returns: Created user session
+        :raises AuthenticationError: If a user with the given username is not found, the password is incorrect or if the user itself is disabled
         """
 
         user = None
@@ -102,18 +122,19 @@ class UserSessionsService:
             raise AuthenticationError("Account is disabled. Please contact an admin.")
         
         # Create the session
-        internal_user_session = await self._create_internal_user_session(user, long_lived=login.long_lived if user.account_type == UserAccountType.DEFAULT else False)
+        internal_user_session = await self._create_internal(user, long_lived=login.long_lived if user.account_type == UserAccountType.DEFAULT else False)
 
         # Assign the session tokens
         self._assign_internal_session_tokens(internal_user_session, response)
 
         return UserSession.model_validate(internal_user_session)
     
-    async def authenticate_session(self, access_token: str) -> UserSession:
-        """Authenticate a user session given its access token
+    async def verify_session(self, access_token: str) -> UserSession:
+        """Verify a user session given its access token
         
         :param access_token: Access token from the session to verify
         :returns: The user sesssion
+        :raises AuthenticationError: If the token is invalid
         """
 
         # Verify the token
@@ -127,3 +148,30 @@ class UserSessionsService:
             raise AuthenticationError("Invalid token")
         
         return UserSession.model_validate(user_session)
+    
+    async def refresh(self, refresh_token: str, response: Response) -> UserSession:
+        """Refresh a user session given its refresh token
+        
+        :param refresh_token: Refresh token from the session to refresh
+        :param response: FastAPI response object to set the cookies on
+        :returns: The user session
+        :raises AuthenticationError: If the refresh token has already been used to refresh the session before and is now invalid
+        """
+        
+        # Verify the token
+        payload = verify_jwt(refresh_token, settings.secret_key.get_secret_value())
+
+        # Obtain the user session to which it belongs
+        user_session = await self._session.user_sessions.get(payload["session_id"])
+
+        # Verify the current refresh token is the current active one for the session
+        if user_session.refresh_token != refresh_token:
+            raise AuthenticationError("Invalid token")
+
+        # Refresh the session tokens
+        internal_user_session = await self._refresh_internal(user_session)
+
+        # Assign the session tokens
+        self._assign_internal_session_tokens(internal_user_session, response)
+
+        return UserSession.model_validate(internal_user_session)
