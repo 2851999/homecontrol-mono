@@ -60,13 +60,21 @@ class AuthService:
         return user
 
 
-# TODO: Move into dependencies?
-async def get_auth_service() -> AsyncGenerator[AuthService, None]:
+@asynccontextmanager
+async def create_auth_service() -> AsyncGenerator[AuthService, None]:
     """Creates an instance of the auth service"""
 
     async with get_database(AuthDatabaseSession, settings.database) as database:
         async with database.start_session() as session:
             yield AuthService(session)
+
+
+# TODO: Move into dependencies?
+async def get_auth_service() -> AsyncGenerator[AuthService, None]:
+    """Creates an instance of the auth service"""
+
+    async with create_auth_service() as service:
+        yield service
 
 
 AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]

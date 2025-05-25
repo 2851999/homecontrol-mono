@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, Response, status
 from homecontrol_base_api.exceptions import BaseAPIError, handle_base_api_error
 
@@ -5,9 +7,21 @@ from homecontrol_auth.dependencies import AnySession, AnyUser, RefreshToken
 from homecontrol_auth.routers.users import users
 from homecontrol_auth.schemas.user_sessions import LoginPost, UserSession
 from homecontrol_auth.schemas.users import User
-from homecontrol_auth.service.core import AuthServiceDep
+from homecontrol_auth.service.core import AuthServiceDep, create_auth_service
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    """Used to perform startup actions"""
+
+    # Delete all expired user sessions on start
+    async with create_auth_service() as auth_service:
+        await auth_service.user_sessions.delete_all_expired()
+
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(users)
 

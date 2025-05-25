@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
@@ -56,3 +57,13 @@ class UserSessionsSession(DatabaseSession):
 
         await self._session.execute(delete(UserSessionInDB).where(UserSessionInDB.id == UUID(session_id)))
         await self._session.commit()
+
+    async def delete_all_expired_before(self, datetime_value: datetime) -> int:
+        """Deletes all user sessions from the database that have expired before the given time
+
+        :param datetime_value: Date and time before which sessions that have expired should be deleted
+        :returns: Number of rows deleted
+        """
+        return (
+            await self._session.execute(delete(UserSessionInDB).where(UserSessionInDB.expiry_time < datetime_value))
+        ).rowcount

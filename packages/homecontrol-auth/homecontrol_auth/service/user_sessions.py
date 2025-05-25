@@ -212,3 +212,8 @@ class UserSessionsService:
 
         await self._session.user_sessions.delete(session_id)
         self._remove_session_tokens(response)
+
+    async def delete_all_expired(self) -> None:
+        """Deletes all user sessions from the database that have expired before now"""
+
+        await self._session.user_sessions.delete_all_expired_before(datetime.now(timezone.utc))
