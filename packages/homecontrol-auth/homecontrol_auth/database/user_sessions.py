@@ -2,7 +2,7 @@ from datetime import datetime
 from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
-from homecontrol_base_api.exceptions import NoRecordFound
+from homecontrol_base_api.exceptions import RecordNotFoundError
 from sqlalchemy import delete, exc, select
 
 from homecontrol_auth.database.models import UserSessionInDB
@@ -28,15 +28,15 @@ class UserSessionsSession(DatabaseSession):
 
         :param session_id: ID of the user session to get
         :returns: The user session
-        :raises NoRecordFound: If the user session with the given ID is not found in the database
+        :raises RecordNotFoundError: If the user session with the given ID is not found in the database
         """
 
         try:
             return (
                 await self._session.execute(select(UserSessionInDB).where(UserSessionInDB.id == UUID(session_id)))
             ).scalar_one()
-        except exc.NoResultFound:
-            raise NoRecordFound(f"No user session found with the ID '{session_id}'")
+        except (exc.NoResultFound, ValueError) as exc:
+            raise RecordNotFoundError(f"No user session found with the ID '{session_id}'") from exc
 
     async def update(self, user_session: UserSessionInDB) -> UserSessionInDB:
         """Updates a user session by commiting any changes to the database
@@ -53,9 +53,17 @@ class UserSessionsSession(DatabaseSession):
         """Deletes a user session from the database given its ID
 
         :param session_id: ID of the session to delete
+        :raises RecordNotFoundError: If the user session with the given ID is not found in the database
         """
 
-        await self._session.execute(delete(UserSessionInDB).where(UserSessionInDB.id == UUID(session_id)))
+        try:
+            result = await self._session.execute(delete(UserSessionInDB).where(UserSessionInDB.id == UUID(session_id)))
+        except ValueError as exc:
+            raise RecordNotFoundError(f"No user session found with the ID '{session_id}'") from exc
+
+        if result.rowcount == 0:
+            raise RecordNotFoundError(f"No user session found with the ID '{session_id}'")
+
         await self._session.commit()
 
     async def delete_all_expired_before(self, datetime_value: datetime) -> int:

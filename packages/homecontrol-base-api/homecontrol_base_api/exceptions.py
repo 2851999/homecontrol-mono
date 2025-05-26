@@ -19,10 +19,16 @@ class DuplicateRecordError(DatabaseError):
     status_code = status.HTTP_409_CONFLICT
 
 
-class NoRecordFound(DatabaseError):
+class RecordNotFoundError(DatabaseError):
     """Raised when attempting find a database record that doesn't exist"""
 
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class InvaludUUIDError(BaseAPIError):
+    """Raised when attempting to convert an invalid string to a UUID"""
+
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 def handle_base_api_error(_: Request, exc: BaseAPIError) -> JSONResponse:

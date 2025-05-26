@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 
 from fastapi import Response
-from homecontrol_base_api.exceptions import NoRecordFound
+from homecontrol_base_api.exceptions import RecordNotFoundError
 
 from homecontrol_auth.config import settings
 from homecontrol_auth.database.core import AuthDatabaseSession
@@ -134,7 +134,7 @@ class UserSessionsService:
         user = None
         try:
             user = await self._session.users.get_by_username(login.username)
-        except NoRecordFound:
+        except RecordNotFoundError:
             # Ignore if not found as want to give an AuthenticationError below instead
             pass
 

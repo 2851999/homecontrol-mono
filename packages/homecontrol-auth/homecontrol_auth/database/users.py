@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
-from homecontrol_base_api.exceptions import DuplicateRecordError, NoRecordFound
+from homecontrol_base_api.exceptions import DuplicateRecordError, RecordNotFoundError
 from sqlalchemy import delete
 from sqlalchemy import exc as sqlalchemy_exc
 from sqlalchemy import func, select
@@ -34,26 +34,26 @@ class UsersSession(DatabaseSession):
 
         :param user_id: ID of the user to get
         :returns: The user
-        :raises NoRecordFound: If the user with the given ID is not found in the database
+        :raises RecordNotFoundError: If the user with the given ID is not found in the database
         """
 
         try:
             return (await self._session.execute(select(UserInDB).where(UserInDB.id == UUID(user_id)))).scalar_one()
-        except sqlalchemy_exc.NoResultFound:
-            raise NoRecordFound(f"No user found with the ID '{user_id}'")
+        except (sqlalchemy_exc.NoResultFound, ValueError) as exc:
+            raise RecordNotFoundError(f"No user found with the ID '{user_id}'") from exc
 
     async def get_by_username(self, username: str) -> UserInDB:
         """Returns a user from the database given their username
 
         :param username: Username of the user to get
         :returns: The User
-        :raises NoRecordFound: If a user with the given username is not found in the database
+        :raises RecordNotFoundError: If a user with the given username is not found in the database
         """
 
         try:
             return (await self._session.execute(select(UserInDB).where(UserInDB.username == username))).scalar_one()
         except sqlalchemy_exc.NoResultFound:
-            raise NoRecordFound(f"No user found with the username '{username}'")
+            raise RecordNotFoundError(f"No user found with the username '{username}'")
 
     async def count(self) -> int:
         """Counts the number of users
@@ -88,5 +88,12 @@ class UsersSession(DatabaseSession):
         :param user_id: ID of the user to delete
         """
 
-        await self._session.execute(delete(UserInDB).where(UserInDB.id == UUID(user_id)))
+        try:
+            result = await self._session.execute(delete(UserInDB).where(UserInDB.id == UUID(user_id)))
+        except ValueError as exc:
+            raise RecordNotFoundError(f"No user found with the ID '{user_id}'") from exc
+
+        if result.rowcount == 0:
+            raise RecordNotFoundError(f"No user found with the ID '{user_id}'")
+
         await self._session.commit()
