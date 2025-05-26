@@ -1,11 +1,21 @@
-from typing import Annotated
+from typing import Annotated, AsyncGenerator
 
 from fastapi import Cookie, Depends
 
 from homecontrol_auth.exceptions import AuthenticationError, InsufficientPrivilegesError
 from homecontrol_auth.schemas.user_sessions import UserSession
 from homecontrol_auth.schemas.users import User, UserAccountType
-from homecontrol_auth.service.core import AuthServiceDep
+from homecontrol_auth.service.core import AuthService, create_auth_service
+
+
+async def get_auth_service() -> AsyncGenerator[AuthService, None]:
+    """Creates an instance of the auth service"""
+
+    async with create_auth_service() as service:
+        yield service
+
+
+AuthServiceDep = Annotated[AuthService, Depends(get_auth_service)]
 
 
 def get_access_token_from_cookie(access_token: Annotated[str, Cookie()] = None) -> str:

@@ -1,0 +1,25 @@
+services:
+  # database:
+  #   image: postgres:16.4
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: user
+  #     POSTGRES_PASSWORD: password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - ./postgres/data:/var/lib/postgresql/data
+
+  homecontrol-controller:
+    # depends_on:
+    #   - database
+    build: .
+    working_dir: /homecontrol-controller
+    volumes:
+      - ../homecontrol-base-api/homecontrol_base_api:/usr/local/lib/python3.12/site-packages/homecontrol_base_api:ro
+      - ./:/homecontrol-controller
+    environment:
+      - DATABASE__DRIVER=sqlite+aiosqlite
+      - DATABASE__NAME=database.db
+    ports:
+      - "8000:8000"
