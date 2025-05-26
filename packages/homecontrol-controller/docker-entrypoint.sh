@@ -2,4 +2,4 @@
 
 alembic upgrade head
 
-exec fastapi dev homecontrol_auth/main.py --host 0.0.0.0 --port 8000
+exec fastapi dev homecontrol_controller/main.py --host 0.0.0.0 --port 8000
