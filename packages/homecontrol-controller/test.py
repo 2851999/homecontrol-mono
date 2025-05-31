@@ -3,6 +3,7 @@ import asyncio
 from msmart.discover import Discover
 
 from homecontrol_controller.config import settings
+from homecontrol_controller.devices.aircon.manager import ACManager
 
 
 async def async_main():
@@ -12,10 +13,10 @@ async def async_main():
     # print(devices)
 
     # Does work on WSL
-    device = await Discover.discover_single(
-        "192.168.1.246",
-        account=settings.midea_username,
-        password=settings.midea_password.get_secret_value(),
+    device = await ACManager.discover(
+        name="Test",
+        ip_address="192.168.1.246",
+        settings=settings.midea,
     )
     print(device)
 
