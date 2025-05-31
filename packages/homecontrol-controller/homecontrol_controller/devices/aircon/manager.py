@@ -2,11 +2,28 @@ from msmart.discover import Discover
 
 from homecontrol_controller.config import MideaSettings
 from homecontrol_controller.database.models import ACDeviceInDB
+from homecontrol_controller.devices.aircon.device import ACDevice
 from homecontrol_controller.exceptions import DeviceConnectionError, DeviceNotFoundError
 
 
 class ACManager:
-    """Manages a set of air conditioning devices"""
+    """Manages a set of air conditioning devices."""
+
+    _devices: dict[str, ACDevice]
+
+    def __init__(self):
+        self._devices = {}
+
+    async def add(self, ac_device: ACDeviceInDB) -> ACDeviceInDB:
+        """Adds an AC device to this manager after first initialising it.
+
+        :param ac_device: Database model of the device to add.
+        """
+
+        device = ACDevice(ac_device)
+        await device.initialise()
+        self._devices[str(ac_device.id)] = device
+        return device
 
     @staticmethod
     async def discover(name: str, ip_address: str, settings: MideaSettings) -> ACDeviceInDB:
@@ -36,5 +53,10 @@ class ACManager:
             raise DeviceNotFoundError(f"Unable to discover the air conditioning unit at {ip_address}")
 
         return ACDeviceInDB(
-            name=name, ip_address=ip_address, identifier=found_device.id, key=found_device.key, token=found_device.token
+            name=name,
+            ip_address=ip_address,
+            port=found_device.port,
+            identifier=found_device.id,
+            key=found_device.key,
+            token=found_device.token,
         )

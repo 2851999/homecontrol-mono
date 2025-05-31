@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from sqlalchemy import BigInteger
+from sqlalchemy import BigInteger, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.types import String, Uuid
 
@@ -17,6 +17,7 @@ class ACDeviceInDB(Base):
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     name: Mapped[str] = mapped_column(String, unique=True, index=True)
     ip_address: Mapped[str] = mapped_column(String, unique=True)
+    port: Mapped[int] = mapped_column(Integer)
     identifier: Mapped[int] = mapped_column(BigInteger)
     key: Mapped[str] = mapped_column(String)
     token: Mapped[str] = mapped_column(String)

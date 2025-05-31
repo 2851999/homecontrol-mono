@@ -12,3 +12,9 @@ class DeviceNotFoundError(BaseAPIError):
     """Raised when a device isnt found while attempting to connect to it"""
 
     status_code = status.HTTP_404_NOT_FOUND
+
+
+class DeviceAuthenticationError(BaseAPIError):
+    """Raised when an error occurs while attempting to authenticate a device"""
+
+    status_code = status.HTTP_500_INTERNAL_SERVER_ERROR

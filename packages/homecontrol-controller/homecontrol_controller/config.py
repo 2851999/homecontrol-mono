@@ -18,4 +18,5 @@ class Settings(BaseSettings):
     midea: MideaSettings
 
 
+# TODO: @lru_cache
 settings = Settings()
