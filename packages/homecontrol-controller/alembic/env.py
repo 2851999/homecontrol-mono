@@ -7,8 +7,8 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from homecontrol_auth.config import settings
-from homecontrol_auth.database.models import Base
+from homecontrol_controller.config import settings
+from homecontrol_controller.database.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -18,7 +18,6 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
 
 config.set_main_option("sqlalchemy.url", str(get_database_url(settings.database)))
 
