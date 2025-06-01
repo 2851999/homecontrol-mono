@@ -32,7 +32,19 @@ class ACManager:
         :param ac_devices: List of database models of the devices to add.
         """
         for ac_device in ac_devices:
-            self.add(ac_device)
+            await self.add(ac_device)
+
+    def get(self, device_id: str) -> ACDevice:
+        """Returns an AC device given its ID.
+
+        :param device_id: ID of the AC device to get.
+        :raises DeviceNotFoundError: If the AC device with the given ID is not found.
+        """
+
+        device = self._devices.get(device_id)
+        if device is None:
+            raise DeviceNotFoundError(f"AC device with ID '{device_id}' was not found")
+        return device
 
     @staticmethod
     async def discover(name: str, ip_address: str, settings: MideaSettings) -> ACDeviceInDB:
@@ -46,7 +58,7 @@ class ACManager:
         :raises DeviceNotFoundError: If the device is not found.
         """
 
-        # Have previously found can be tempermental returning None when repeating will find it, so retry up to 3 times here
+        # Have previously found can be temperamental returning None when repeating will find it, so retry up to 3 times here
         found_device = None
         attempts = 0
         while found_device is None and attempts < 3:

@@ -9,7 +9,7 @@ class DeviceConnectionError(BaseAPIError):
 
 
 class DeviceNotFoundError(BaseAPIError):
-    """Raised when a device isnt found while attempting to connect to it"""
+    """Raised when a device isnt found while attempting to connect to it or when it isnt found in the existing devices."""
 
     status_code = status.HTTP_404_NOT_FOUND
 

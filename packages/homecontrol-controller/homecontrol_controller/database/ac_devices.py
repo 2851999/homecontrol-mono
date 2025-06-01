@@ -27,7 +27,7 @@ class ACDevicesSession(DatabaseSession):
 
         :param device_id: ID of the AC device to get.
         :returns: The AC device.
-        :raises RecordNotFoundError: If the AC devvice with the given ID is not found in the database.
+        :raises RecordNotFoundError: If the AC device with the given ID is not found in the database.
         """
 
         try:
