@@ -19,7 +19,7 @@ class ACDevicesSession(DatabaseSession):
 
         self._session.add(ac_device)
         await self._session.commit()
-        await self._session.refresh()
+        await self._session.refresh(ac_device)
         return ac_device
 
     async def get(self, device_id: str) -> ACDeviceInDB:
@@ -36,6 +36,14 @@ class ACDevicesSession(DatabaseSession):
             ).scalar_one()
         except (exc.NoResultFound, ValueError) as exc:
             raise RecordNotFoundError(f"No AC device found with the ID '{device_id}'") from exc
+
+    async def get_all(self) -> list[ACDeviceInDB]:
+        """Returns a list of all AC devices from the database.
+
+        :returns: List of AC devices.
+        """
+
+        return (await self._session.execute(select(ACDeviceInDB))).scalars().all()
 
     async def update(self, ac_device: ACDeviceInDB) -> ACDeviceInDB:
         """Updates an AC device by commiting any changes to the database.

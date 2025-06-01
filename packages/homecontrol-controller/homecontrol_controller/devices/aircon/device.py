@@ -1,5 +1,6 @@
 import asyncio
 
+from msmart.cloud import CloudError
 from msmart.const import DeviceType
 from msmart.device.AC.device import AirConditioner
 from msmart.lan import AuthenticationError
@@ -33,7 +34,7 @@ class ACDevice:
             try:
                 await self._device.authenticate(token=self._info.token, key=self._info.key)
                 break
-            except AuthenticationError as exc:
+            except (AuthenticationError, CloudError) as exc:
                 if retry == 2:
                     raise DeviceAuthenticationError(
                         f"Failed to authenticate AC device with name '{self._info.name}'"

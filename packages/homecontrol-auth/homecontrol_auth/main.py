@@ -23,9 +23,9 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(users)
-
 app.add_exception_handler(BaseAPIError, handle_base_api_error)
+
+app.include_router(users)
 
 
 @app.post("/login", summary="Login as a user")

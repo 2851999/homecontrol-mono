@@ -12,6 +12,6 @@ class ControllerDatabaseSession(DatabaseSession):
 
     @property
     def ac_devices(self) -> ACDevicesSession:
-        if not self._users:
-            self._users = ControllerDatabaseSession(self._session)
-        return self._users
+        if not self._ac_devices:
+            self._ac_devices = ACDevicesSession(self._session)
+        return self._ac_devices

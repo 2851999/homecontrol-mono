@@ -14,16 +14,25 @@ class ACManager:
     def __init__(self):
         self._devices = {}
 
-    async def add(self, ac_device: ACDeviceInDB) -> ACDeviceInDB:
+    async def add(self, ac_device: ACDeviceInDB) -> ACDevice:
         """Adds an AC device to this manager after first initialising it.
 
         :param ac_device: Database model of the device to add.
+        :returns: The initialised AC device.
         """
 
         device = ACDevice(ac_device)
         await device.initialise()
         self._devices[str(ac_device.id)] = device
         return device
+
+    async def add_all(self, ac_devices: list[ACDeviceInDB]) -> None:
+        """Loads a list of AC devices, adding each to this manager after first intiialising them.
+
+        :param ac_devices: List of database models of the devices to add.
+        """
+        for ac_device in ac_devices:
+            self.add(ac_device)
 
     @staticmethod
     async def discover(name: str, ip_address: str, settings: MideaSettings) -> ACDeviceInDB:
