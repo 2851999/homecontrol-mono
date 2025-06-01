@@ -68,9 +68,9 @@ class ACDeviceState(BaseModel):
     operational_mode: ACDeviceMode
     fan_speed: ACDeviceFanSpeed
     swing_mode: ACDeviceSwingMode
-    rate: ACDeviceRate
     eco_mode: bool
     turbo_mode: bool
+    rate: ACDeviceRate
     fahrenheit: bool
     display_on: bool
 
