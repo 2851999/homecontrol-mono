@@ -63,7 +63,6 @@ class UsersService:
         user = await self._session.users.get(user_id)
 
         update_data = user_patch.model_dump(exclude_unset=True)
-        print(update_data)
         for key, value in update_data.items():
             setattr(user, key, value)
 

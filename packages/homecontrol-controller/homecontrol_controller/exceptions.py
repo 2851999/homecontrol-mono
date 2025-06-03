@@ -18,3 +18,9 @@ class DeviceAuthenticationError(BaseAPIError):
     """Raised when an error occurs while attempting to authenticate a device"""
 
     status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+
+class DeviceInvalidStateError(BaseAPIError):
+    """Raised when attempting to change the state of a device to be invalid"""
+
+    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY

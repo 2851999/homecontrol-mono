@@ -3,7 +3,7 @@ from pydantic import TypeAdapter
 from homecontrol_controller.config import settings
 from homecontrol_controller.database.ac_devices import ACDevicesSession
 from homecontrol_controller.devices.aircon.manager import ACManager
-from homecontrol_controller.schemas.ac_devices import ACDevice, ACDevicePost, ACDeviceState
+from homecontrol_controller.schemas.ac_devices import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
 
 
 class ACService:
@@ -47,3 +47,13 @@ class ACService:
         """
 
         return await self._manager.get(device_id).get_state()
+
+    async def update_state(self, device_id: str, state_patch: ACDeviceStatePatch) -> ACDeviceState:
+        """Obtains an AC device's current state.
+
+        :param device_id: ID of the AC device to change the state of.
+        :param state_patch: Change of state to apply to the device.
+        :return: The new state of the device.
+        """
+
+        return await self._manager.get(device_id).update_state(state_patch)

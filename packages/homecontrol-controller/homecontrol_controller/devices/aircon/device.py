@@ -6,8 +6,8 @@ from msmart.device.AC.device import AirConditioner
 from msmart.lan import AuthenticationError
 
 from homecontrol_controller.database.models import ACDeviceInDB
-from homecontrol_controller.exceptions import DeviceAuthenticationError, DeviceConnectionError
-from homecontrol_controller.schemas.ac_devices import ACDeviceState
+from homecontrol_controller.exceptions import DeviceAuthenticationError, DeviceConnectionError, DeviceInvalidStateError
+from homecontrol_controller.schemas.ac_devices import ACDeviceState, ACDeviceStatePatch
 
 
 class ACDevice:
@@ -88,5 +88,73 @@ class ACDevice:
         # but if it happens again assume its accurate
         if self._device.indoor_temperature == 0 and self._device.outdoor_temperature == 0:
             await self._refresh_state()
+
+        return self._get_current_state()
+
+    async def update_state(self, state_patch: ACDeviceStatePatch) -> ACDeviceState:
+        """Applies a specific change of state to the AC device.
+
+        :param state_patch: Change of state to apply to the device.
+        :returns: The current state of the AC device.
+        :raises ACInvalidStateError: If the requested state is invalid.
+        """
+
+        # Obtaint the current state to patch
+        current_state = await self.get_state()
+        updated_state = ACDeviceState(**{**current_state.model_dump(), **state_patch.model_dump(exclude_unset=True)})
+
+        # Check the new state is valid
+        if state_patch.target_temperature is not None and not 16 <= updated_state.target_temperature <= 30:
+            raise DeviceInvalidStateError(
+                f"target_temperature of {state_patch.target_temperature} must be between 16 and 30"
+            )
+
+        if (
+            state_patch.eco_mode is not None
+            or state_patch.turbo_mode is not None
+            and updated_state.eco_mode
+            and updated_state.turbo_mode
+        ):
+            raise DeviceInvalidStateError(f"Cannot have both 'eco_mode' and 'turbo_mode' True at the same time")
+
+        # Assign the state and figure out if the display should be toggled
+        toggle_display = False
+
+        if state_patch.power is not None:
+            self._device.power_state = state_patch.power
+        if state_patch.target_temperature is not None:
+            self._device.target_temperature = state_patch.target_temperature
+        if state_patch.operational_mode is not None:
+            self._device.operational_mode = state_patch.operational_mode
+        if state_patch.fan_speed is not None:
+            self._device.fan_speed = state_patch.fan_speed
+        if state_patch.swing_mode is not None:
+            self._device.swing_mode = state_patch.swing_mode
+        if state_patch.eco_mode is not None:
+            self._device.eco = state_patch.eco_mode
+        if state_patch.turbo_mode is not None:
+            self._device.turbo = state_patch.turbo_mode
+        if state_patch.rate is not None:
+            self._device.rate_select = state_patch.rate
+        if state_patch.fahrenheit is not None:
+            self._device.fahrenheit = state_patch.fahrenheit
+        if state_patch.display_on is not None and current_state.display_on != updated_state.display_on:
+            toggle_display = True
+        if state_patch.beep is not None:
+            self._device.beep = state_patch.beep
+
+        # Have previously found can be temperamental so retry the apply up to 3 times here
+        for retry in range(0, 3):
+            try:
+                # Apply the state and toggle the display if needed
+                await self._device.apply()
+                if toggle_display:
+                    await self._device.toggle_display()
+                break
+            except UnboundLocalError as exc:
+                if retry == 2:
+                    raise DeviceAuthenticationError(
+                        f"An error occurred while attempting to apply the state of an AC device with name '{self._info.name}'"
+                    ) from exc
 
         return self._get_current_state()
