@@ -6,15 +6,15 @@ from zeroconf import ServiceStateChange, Zeroconf
 from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
 
 from homecontrol_controller.exceptions import DeviceDiscoveryError
-from homecontrol_controller.schemas.hue import HueBridgeDiscoveryInfo
+from homecontrol_controller.schemas.hue import HueBridgeDeviceDiscoveryInfo
 
 DISCOVER_URL = "https://discovery.meethue.com/"
 
 
-class HueDiscoveryListener:
+class HueBridgeDiscoveryListener:
     """Listener for Hue Bridges"""
 
-    _found_devices: list[HueBridgeDiscoveryInfo]
+    _found_devices: list[HueBridgeDeviceDiscoveryInfo]
 
     def __init__(self, **args):
         super().__init__(**args)
@@ -25,9 +25,8 @@ class HueDiscoveryListener:
 
         info = AsyncServiceInfo(type_, name)
         await info.async_request(zc, 3000)
-        print(info)
         self._found_devices.append(
-            HueBridgeDiscoveryInfo(
+            HueBridgeDeviceDiscoveryInfo(
                 id=info.properties[b"bridgeid"],
                 internalipaddress=info.parsed_addresses()[0],
                 port=info.port,
@@ -53,37 +52,40 @@ class HueDiscoveryListener:
 
         return async_on_service_state_change
 
-    def get_found_devices(self) -> list[HueBridgeDiscoveryInfo]:
+    def get_found_devices(self) -> list[HueBridgeDeviceDiscoveryInfo]:
         """Returns all the found devices"""
         return self._found_devices
 
 
-# TODO: Put in a class?
-async def discover_hue_bridges(use_mDNS: bool) -> list[HueBridgeDiscoveryInfo]:
-    """Attempts to discover all Hue Bridges that are available on the current network.
+class HueBridgeDiscovery:
+    """Contains methods to discover Hue Bridge devices."""
 
-    :param use_mDNS: Whether to use mDNS discovery. This may not work in some configurations such as Docker via WSL.
-    """
-    if use_mDNS:
-        zeroconf = AsyncZeroconf()
-        listener = HueDiscoveryListener()
-        browser = AsyncServiceBrowser(
-            zeroconf.zeroconf,
-            "_hue._tcp.local.",
-            handlers=[listener.get_service_handler()],
-        )
-        # Wait 5 seconds to collect as many as possible
-        await asyncio.sleep(5)
+    @staticmethod
+    async def discover(use_mDNS: bool) -> list[HueBridgeDeviceDiscoveryInfo]:
+        """Attempts to discover all Hue Bridges that are available on the current network.
 
-        await browser.async_cancel()
-        await zeroconf.async_close()
+        :param use_mDNS: Whether to use mDNS discovery. This may not work in some configurations such as Docker via WSL.
+        """
+        if use_mDNS:
+            zeroconf = AsyncZeroconf()
+            listener = HueBridgeDiscoveryListener()
+            browser = AsyncServiceBrowser(
+                zeroconf.zeroconf,
+                "_hue._tcp.local.",
+                handlers=[listener.get_service_handler()],
+            )
+            # Wait 5 seconds to collect as many as possible
+            await asyncio.sleep(5)
 
-        return listener.get_found_devices()
-    else:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(DISCOVER_URL)
-            if response.is_error:
-                raise DeviceDiscoveryError(
-                    f"Unable to discover Hue Bridges due to an error during discovery '{response.reason_phrase}'"
-                )
-            return TypeAdapter(list[HueBridgeDiscoveryInfo]).validate_python(response.json())
+            await browser.async_cancel()
+            await zeroconf.async_close()
+
+            return listener.get_found_devices()
+        else:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(DISCOVER_URL)
+                if response.is_error:
+                    raise DeviceDiscoveryError(
+                        f"Unable to discover Hue Bridges due to an error during discovery '{response.reason_phrase}'"
+                    )
+                return TypeAdapter(list[HueBridgeDeviceDiscoveryInfo]).validate_python(response.json())

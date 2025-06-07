@@ -3,7 +3,14 @@ from typing import Optional
 
 from homecontrol_base_api.types import StringUUID
 from msmart.device.AC.device import AirConditioner
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class ACDeviceDiscoveryInfo(BaseModel):
+    "Schema for a discovered AC device."
+
+    id: str
+    ip_address: str = Field(validation_alias="ip")
 
 
 class ACDevicePost(BaseModel):

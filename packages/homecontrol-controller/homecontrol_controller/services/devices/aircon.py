@@ -2,8 +2,15 @@ from pydantic import TypeAdapter
 
 from homecontrol_controller.config import settings
 from homecontrol_controller.database.ac_devices import ACDevicesSession
+from homecontrol_controller.devices.aircon.discovery import ACDiscovery
 from homecontrol_controller.devices.aircon.manager import ACManager
-from homecontrol_controller.schemas.aircon import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
+from homecontrol_controller.schemas.aircon import (
+    ACDevice,
+    ACDeviceDiscoveryInfo,
+    ACDevicePost,
+    ACDeviceState,
+    ACDeviceStatePatch,
+)
 
 
 class ACService:
@@ -16,6 +23,11 @@ class ACService:
         self._session = session
         self._manager = manager
 
+    async def discover_units(self) -> ACDeviceDiscoveryInfo:
+        """Attempts to discover all AC devices that are available on the current network."""
+
+        return await ACDiscovery.discover(settings=settings.midea)
+
     async def create(self, ac_device: ACDevicePost) -> ACDevice:
         """Creates an AC device.
 
@@ -23,7 +35,7 @@ class ACService:
         :returns: Created AC device.
         """
 
-        found_device = await ACManager.discover(
+        found_device = await ACDiscovery.discover_single(
             name=ac_device.name, ip_address=ac_device.ip_address, settings=settings.midea
         )
         ac_device_out = await self._session.create(found_device)

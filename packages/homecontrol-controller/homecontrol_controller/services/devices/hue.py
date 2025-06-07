@@ -1,12 +1,12 @@
 from homecontrol_controller.config import settings
-from homecontrol_controller.devices.hue.discovery import discover_hue_bridges
-from homecontrol_controller.schemas.hue import HueBridgeDiscoveryInfo
+from homecontrol_controller.devices.hue.discovery import HueBridgeDiscovery
+from homecontrol_controller.schemas.hue import HueBridgeDeviceDiscoveryInfo
 
 
 class HueService:
-    """Servuce that handles Hue devices."""
+    """Service that handles Hue devices."""
 
-    async def discover_bridges(self) -> HueBridgeDiscoveryInfo:
+    async def discover_bridges(self) -> HueBridgeDeviceDiscoveryInfo:
         """Attempts to discover all Hue Bridges that are available on the current network."""
 
-        return await discover_hue_bridges(use_mDNS=settings.hue.use_mDNS_discovery)
+        return await HueBridgeDiscovery.discover(use_mDNS=settings.hue.use_mDNS_discovery)

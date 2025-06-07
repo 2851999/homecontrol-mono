@@ -3,8 +3,8 @@ import asyncio
 from msmart.discover import Discover
 
 from homecontrol_controller.config import settings
+from homecontrol_controller.devices.aircon.discovery import ACDiscovery
 from homecontrol_controller.devices.aircon.manager import ACManager
-from homecontrol_controller.devices.hue.discovery import discover_hue_bridges
 
 
 async def async_main():
@@ -21,7 +21,9 @@ async def async_main():
     # )
     # print(device)
 
-    print(await discover_hue_bridges(False))
+    # print(await discover_hue_bridges(False))
+
+    print(await ACDiscovery.discover(settings.midea))
 
 
 asyncio.run(async_main())

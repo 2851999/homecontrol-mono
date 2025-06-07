@@ -1,9 +1,20 @@
 from fastapi import APIRouter, status
 
 from homecontrol_controller.dependencies import ControllerServiceDep
-from homecontrol_controller.schemas.aircon import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
+from homecontrol_controller.schemas.aircon import (
+    ACDevice,
+    ACDeviceDiscoveryInfo,
+    ACDevicePost,
+    ACDeviceState,
+    ACDeviceStatePatch,
+)
 
 aircon = APIRouter(prefix="/aircon", tags=["Air Conditioning"])
+
+
+@aircon.get("/discover", summary="Discover a list of AC units")
+async def discover_units(controller_service: ControllerServiceDep) -> list[ACDeviceDiscoveryInfo]:
+    return await controller_service.devices.aircon.discover_units()
 
 
 @aircon.post("", summary="Create an AC device", status_code=status.HTTP_201_CREATED)
