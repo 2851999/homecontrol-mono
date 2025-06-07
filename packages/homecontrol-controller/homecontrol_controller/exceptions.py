@@ -2,6 +2,12 @@ from fastapi import status
 from homecontrol_base_api.exceptions import BaseAPIError
 
 
+class DeviceDiscoveryError(BaseAPIError):
+    """Raised when an error occurs while attempting to discover devices"""
+
+    status_code = status.HTTP_502_BAD_GATEWAY
+
+
 class DeviceConnectionError(BaseAPIError):
     """Raised when an error occurs while attempting to connect to a device"""
 

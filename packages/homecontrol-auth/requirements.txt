@@ -9,9 +9,9 @@ dnspython==2.7.0
 email_validator==2.2.0
 fastapi==0.115.12
 fastapi-cli==0.0.7
-greenlet==3.2.2
+greenlet==3.2.3
 h11==0.16.0
-git+ssh://git@github.com/2851999/homecontrol-mono.git@5bd0a02b5f26e82299b8cfa7cb8caac4fed70320#egg=homecontrol_base_api&subdirectory=packages/homecontrol-base-api
+git+ssh://git@github.com/2851999/homecontrol-mono.git@b91f8f0dc5dc98c0fa3049fbebdc55ac5b710d01#egg=homecontrol_base_api&subdirectory=packages/homecontrol-base-api
 httpcore==1.0.9
 httptools==0.6.4
 httpx==0.28.1
@@ -37,8 +37,8 @@ SQLAlchemy==2.0.41
 starlette==0.46.2
 typer==0.16.0
 typing-inspection==0.4.1
-typing_extensions==4.13.2
-uvicorn==0.34.2
+typing_extensions==4.14.0
+uvicorn==0.34.3
 uvloop==0.21.0
 watchfiles==1.0.5
 websockets==15.0.1

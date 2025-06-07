@@ -9,6 +9,11 @@ class MideaSettings(BaseModel):
     password: SecretStr
 
 
+class HueSettings(BaseModel):
+
+    use_mDNS_discovery: bool
+
+
 class Settings(BaseSettings):
     """Settings of homecontrol-auth"""
 
@@ -16,6 +21,7 @@ class Settings(BaseSettings):
 
     database: DatabaseSettings = DatabaseSettings()
     midea: MideaSettings
+    hue: HueSettings
 
 
 # TODO: @lru_cache

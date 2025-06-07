@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from homecontrol_controller.dependencies import ControllerServiceDep
-from homecontrol_controller.schemas.ac_devices import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
+from homecontrol_controller.schemas.aircon import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
 
 aircon = APIRouter(prefix="/aircon", tags=["Air Conditioning"])
 

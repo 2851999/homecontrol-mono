@@ -3,11 +3,11 @@ from pydantic import TypeAdapter
 from homecontrol_controller.config import settings
 from homecontrol_controller.database.ac_devices import ACDevicesSession
 from homecontrol_controller.devices.aircon.manager import ACManager
-from homecontrol_controller.schemas.ac_devices import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
+from homecontrol_controller.schemas.aircon import ACDevice, ACDevicePost, ACDeviceState, ACDeviceStatePatch
 
 
 class ACService:
-    """Service that handles AC devcies."""
+    """Service that handles AC devices."""
 
     _session: ACDevicesSession
     _manager: ACManager

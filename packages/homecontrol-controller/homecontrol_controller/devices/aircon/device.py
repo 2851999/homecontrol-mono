@@ -7,7 +7,7 @@ from msmart.lan import AuthenticationError
 
 from homecontrol_controller.database.models import ACDeviceInDB
 from homecontrol_controller.exceptions import DeviceAuthenticationError, DeviceConnectionError, DeviceInvalidStateError
-from homecontrol_controller.schemas.ac_devices import ACDeviceState, ACDeviceStatePatch
+from homecontrol_controller.schemas.aircon import ACDeviceState, ACDeviceStatePatch
 
 
 class ACDevice:

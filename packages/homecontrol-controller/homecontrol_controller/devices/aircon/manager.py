@@ -46,6 +46,7 @@ class ACManager:
             raise DeviceNotFoundError(f"AC device with ID '{device_id}' was not found")
         return device
 
+    # TODO: Move to discovery.py like Hue?
     @staticmethod
     async def discover(name: str, ip_address: str, settings: MideaSettings) -> ACDeviceInDB:
         """Attempts to discover an air conditioning device given its ip address
@@ -63,7 +64,9 @@ class ACManager:
         attempts = 0
         while found_device is None and attempts < 3:
             try:
-                found_device = await Discover.discover_single(ip_address)
+                found_device = await Discover.discover_single(
+                    ip_address, account=settings.username, password=settings.password.get_secret_value()
+                )
             except Exception:
                 raise DeviceConnectionError(
                     f"An error occurred while attempting to discover an air conditioning unit at {ip_address}"
