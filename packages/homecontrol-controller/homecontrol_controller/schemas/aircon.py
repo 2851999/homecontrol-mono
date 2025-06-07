@@ -9,7 +9,9 @@ from pydantic import BaseModel, ConfigDict, Field
 class ACDeviceDiscoveryInfo(BaseModel):
     "Schema for a discovered AC device."
 
-    id: str
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
     ip_address: str = Field(validation_alias="ip")
 
 
