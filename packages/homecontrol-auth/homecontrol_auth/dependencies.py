@@ -5,7 +5,7 @@ from fastapi import Cookie, Depends
 from homecontrol_auth.exceptions import AuthenticationError, InsufficientPrivilegesError
 from homecontrol_auth.schemas.user_sessions import UserSession
 from homecontrol_auth.schemas.users import User, UserAccountType
-from homecontrol_auth.service.core import AuthService, create_auth_service
+from homecontrol_auth.services.core import AuthService, create_auth_service
 
 
 async def get_auth_service() -> AsyncGenerator[AuthService, None]:

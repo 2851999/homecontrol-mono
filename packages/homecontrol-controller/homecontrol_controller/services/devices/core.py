@@ -28,5 +28,5 @@ class DeviceService:
     @property
     def hue(self) -> HueService:
         if not self._hue:
-            self._hue = HueService()
+            self._hue = HueService(self._session.hue_bridge_devices)
         return self._hue

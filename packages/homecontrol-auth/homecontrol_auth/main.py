@@ -7,7 +7,7 @@ from homecontrol_auth.dependencies import AnySession, AnyUser, AuthServiceDep, R
 from homecontrol_auth.routers.users import users
 from homecontrol_auth.schemas.user_sessions import LoginPost, UserSession
 from homecontrol_auth.schemas.users import User
-from homecontrol_auth.service.core import create_auth_service
+from homecontrol_auth.services.core import create_auth_service
 
 
 @asynccontextmanager

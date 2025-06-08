@@ -13,6 +13,8 @@ COPY homecontrol_controller /homecontrol-controller/homecontrol_controller
 COPY alembic /homecontrol-controller/alembic
 COPY alembic.ini /homecontrol-controller/alembic.ini
 
+COPY hue_cert.pem /homecontrol-controller/hue_cert.pem
+
 COPY docker-entrypoint.sh /homecontrol-controller/docker-entrypoint.sh
 
 ENTRYPOINT [ "/homecontrol-controller/docker-entrypoint.sh" ] 

@@ -12,17 +12,17 @@ class ACDeviceDiscoveryInfo(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    ip_address: str = Field(validation_alias="ip")
+    ip_address: str
 
 
 class ACDevicePost(BaseModel):
     """Schema for creating an AC device."""
 
     name: str
-    ip_address: str
+    discovery_info: ACDeviceDiscoveryInfo
 
 
-class ACDevice(ACDevicePost):
+class ACDevice(ACDeviceDiscoveryInfo):
     """Schema for an AC device."""
 
     model_config = ConfigDict(from_attributes=True)

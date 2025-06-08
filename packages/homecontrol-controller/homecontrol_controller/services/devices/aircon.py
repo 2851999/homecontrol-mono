@@ -35,8 +35,8 @@ class ACService:
         :returns: Created AC device.
         """
 
-        found_device = await ACDiscovery.discover_single(
-            name=ac_device.name, ip_address=ac_device.ip_address, settings=settings.midea
+        found_device = await ACDiscovery.authenticate(
+            name=ac_device.name, discovery_info=ac_device.discovery_info, settings=settings.midea
         )
         ac_device_out = await self._session.create(found_device)
         await self._manager.add(ac_device=ac_device_out)

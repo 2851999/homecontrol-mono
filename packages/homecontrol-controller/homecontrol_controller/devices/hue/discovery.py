@@ -5,7 +5,14 @@ from pydantic import TypeAdapter
 from zeroconf import ServiceStateChange, Zeroconf
 from zeroconf.asyncio import AsyncServiceBrowser, AsyncServiceInfo, AsyncZeroconf
 
-from homecontrol_controller.exceptions import DeviceDiscoveryError
+from homecontrol_controller.config import HueSettings
+from homecontrol_controller.database.models import HueBridgeDeviceInDB
+from homecontrol_controller.devices.hue.session import create_hue_bridge_session
+from homecontrol_controller.exceptions import (
+    DeviceAuthenticationError,
+    DeviceDiscoveryError,
+    HueBridgeButtonNotPressedError,
+)
 from homecontrol_controller.schemas.hue import HueBridgeDeviceDiscoveryInfo
 
 DISCOVER_URL = "https://discovery.meethue.com/"
@@ -28,7 +35,7 @@ class HueBridgeDiscoveryListener:
         self._found_devices.append(
             HueBridgeDeviceDiscoveryInfo(
                 id=info.properties[b"bridgeid"],
-                internalipaddress=info.parsed_addresses()[0],
+                ip_address=info.parsed_addresses()[0],
                 port=info.port,
             )
         )
@@ -83,9 +90,50 @@ class HueBridgeDiscovery:
             return listener.get_found_devices()
         else:
             async with httpx.AsyncClient() as client:
-                response = await client.get(DISCOVER_URL)
-                if response.is_error:
+                try:
+                    response = await client.get(DISCOVER_URL)
+                    response.raise_for_status()
+                    found_devices = response.json()
+                except Exception as exc:
                     raise DeviceDiscoveryError(
                         f"Unable to discover Hue Bridges due to an error during discovery '{response.reason_phrase}'"
+                    ) from exc
+                # Rename this as different to schema model
+                for device in found_devices:
+                    device["ip_address"] = device["internalipaddress"]
+                    del device["internalipaddress"]
+                return TypeAdapter(list[HueBridgeDeviceDiscoveryInfo]).validate_python(found_devices)
+
+    @staticmethod
+    async def authenticate(
+        name: str, discovery_info: HueBridgeDeviceDiscoveryInfo, settings: HueSettings
+    ) -> HueBridgeDeviceInDB:
+        """Attempts to discover and authenticate a Hue Bridge device given its discovery info.
+
+        :param name: Name to give the device.
+        :param discovery_info: Device discovery info.
+        :param settings: Hue settings for authentication.
+        :raises HueBridgeButtonNotPressedError: If the authentication fails due to a requirement to press the button on the Hue Bridge.
+        :raises DeviceAuthenticationError: If the authentication fails due to any other reason.
+        """
+
+        async with create_hue_bridge_session(discovery_info, settings) as session:
+            response = await session.api.generate_client_key()
+            if response.error is not None:
+                if response.error.type == 101:
+                    raise HueBridgeButtonNotPressedError(
+                        f"Please press the button on the Hue Bridge with name '{name}' and IP '{discovery_info.ip_address}'"
                     )
-                return TypeAdapter(list[HueBridgeDeviceDiscoveryInfo]).validate_python(response.json())
+            elif response.success is not None:
+                return HueBridgeDeviceInDB(
+                    name=name,
+                    ip_address=discovery_info.ip_address,
+                    port=discovery_info.port,
+                    identifier=discovery_info.id,
+                    username=response.success.username,
+                    client_key=response.success.clientkey,
+                )
+
+        raise DeviceAuthenticationError(
+            f"Failed to authenticate the Hue Bridge with name '{name}' and IP '{discovery_info.ip_address}'"
+        )

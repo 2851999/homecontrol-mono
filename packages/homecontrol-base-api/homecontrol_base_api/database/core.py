@@ -67,7 +67,11 @@ class Database(Generic[TDatabaseSession]):
 async def get_database(
     session_type: Type[TDatabaseSession], settings: DatabaseSettings
 ) -> AsyncGenerator[Database[TDatabaseSession], None]:
-    """Returns a database instance"""
+    """Obtains a database session.
+
+    :param session_type: Type of database session to initialise.
+    :param settings: Database settings.
+    """
 
     database = Database(session_type, settings)
     try:

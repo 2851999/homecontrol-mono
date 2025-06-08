@@ -3,7 +3,7 @@ from uuid import UUID
 
 from pydantic import BeforeValidator
 
-from homecontrol_base_api.exceptions import InvaludUUIDError
+from homecontrol_base_api.exceptions import InvalidUUIDError
 
 
 def convert_uuid_to_string(id: Union[UUID, str]):
@@ -20,7 +20,7 @@ def convert_string_to_uuid(id: Union[UUID, str]):
         try:
             return UUID(id)
         except ValueError as exc:
-            raise InvaludUUIDError(f"'{id}' is not a valid UUID") from exc
+            raise InvalidUUIDError(f"'{id}' is not a valid UUID") from exc
     else:
         return id
 

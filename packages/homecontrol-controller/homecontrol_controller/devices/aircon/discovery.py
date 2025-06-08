@@ -12,7 +12,7 @@ class ACDiscovery:
 
     @staticmethod
     async def discover(settings: MideaSettings) -> ACDeviceDiscoveryInfo:
-        """Attempts to discover an air conditioning device given its ip address
+        """Attempts to discover all air conditioning devices that are available on the current network.
 
         :param settings: Midea settings for authentication.
         :returns: Database model of the discovered device.
@@ -25,20 +25,30 @@ class ACDiscovery:
         while len(found_devices) == 0 and attempts < 3:
             try:
                 found_devices = await Discover.discover(
-                    account=settings.username, password=settings.password.get_secret_value()
+                    account=settings.username,
+                    password=settings.password.get_secret_value(),
+                    # Don't authenticate as will do that when directly discovered in `discover_single`
+                    auto_connect=False,
                 )
-            except Exception:
-                raise DeviceDiscoveryError(f"An error occurred while attempting to discover air conditioning units")
+            except Exception as exc:
+                raise DeviceDiscoveryError(
+                    f"An error occurred while attempting to discover air conditioning units"
+                ) from exc
             attempts += 1
+
+        # Rename this as different to schema model
+        for device in found_devices:
+            device["ip_address"] = device["ip"]
+            del device["ip"]
 
         return TypeAdapter(list[ACDeviceDiscoveryInfo]).validate_python(found_devices)
 
     @staticmethod
-    async def discover_single(name: str, ip_address: str, settings: MideaSettings) -> ACDeviceInDB:
-        """Attempts to discover an air conditioning device given its ip address
+    async def authenticate(name: str, discovery_info: ACDeviceDiscoveryInfo, settings: MideaSettings) -> ACDeviceInDB:
+        """Attempts to discover and authenticate an air conditioning device.
 
         :param name: Name to give the device.
-        :param ip_address: IP address of the device.
+        :param discovery_info: Device discovery info.
         :param settings: Midea settings for authentication.
         :returns: Database model of the discovered device.
         :raises DeviceConnectionError: If an error occurs when trying to connect to the device.
@@ -51,20 +61,20 @@ class ACDiscovery:
         while found_device is None and attempts < 3:
             try:
                 found_device = await Discover.discover_single(
-                    ip_address, account=settings.username, password=settings.password.get_secret_value()
+                    discovery_info.ip_address, account=settings.username, password=settings.password.get_secret_value()
                 )
-            except Exception:
+            except Exception as exc:
                 raise DeviceConnectionError(
-                    f"An error occurred while attempting to discover an air conditioning unit at {ip_address}"
-                )
+                    f"An error occurred while attempting to discover an air conditioning unit at {discovery_info.ip_address}"
+                ) from exc
             attempts += 1
 
         if found_device is None or found_device.key is None or found_device.token is None:
-            raise DeviceNotFoundError(f"Unable to discover the air conditioning unit at {ip_address}")
+            raise DeviceNotFoundError(f"Unable to discover the air conditioning unit at {discovery_info.ip_address}")
 
         return ACDeviceInDB(
             name=name,
-            ip_address=ip_address,
+            ip_address=discovery_info.ip_address,
             port=found_device.port,
             identifier=found_device.id,
             key=found_device.key,

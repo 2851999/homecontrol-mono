@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
-from typing import Annotated, AsyncGenerator, Optional
+from typing import AsyncGenerator, Optional
 
-from fastapi import Depends
 from homecontrol_base_api.database.core import get_database
 
 from homecontrol_auth.config import settings

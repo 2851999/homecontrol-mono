@@ -1,6 +1,10 @@
+import logging
+
 from fastapi import Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
+
+logger = logging.getLogger()
 
 
 class BaseAPIError(Exception):
@@ -25,13 +29,14 @@ class RecordNotFoundError(DatabaseError):
     status_code = status.HTTP_404_NOT_FOUND
 
 
-class InvaludUUIDError(BaseAPIError):
+class InvalidUUIDError(BaseAPIError):
     """Raised when attempting to convert an invalid string to a UUID"""
 
     status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def handle_base_api_error(_: Request, exc: BaseAPIError) -> JSONResponse:
+async def handle_base_api_error(_: Request, exc: BaseAPIError) -> JSONResponse:
+    logger.exception(exc)
     return JSONResponse(
         status_code=exc.status_code,
         content=jsonable_encoder({"detail": str(exc)}),
