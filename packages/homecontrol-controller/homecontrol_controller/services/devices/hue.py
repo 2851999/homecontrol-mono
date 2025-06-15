@@ -1,6 +1,7 @@
 from homecontrol_controller.config import settings
 from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesSession
 from homecontrol_controller.devices.hue.discovery import HueBridgeDiscovery
+from homecontrol_controller.devices.hue.manager import HueBridgeManager
 from homecontrol_controller.schemas.hue import HueBridgeDevice, HueBridgeDeviceDiscoveryInfo, HueBridgeDevicePost
 
 
@@ -8,9 +9,11 @@ class HueService:
     """Service that handles Hue devices."""
 
     _session: HueBridgeDevicesSession
+    _bridge_manager: HueBridgeManager
 
-    def __init__(self, session: HueBridgeDevicesSession):
+    def __init__(self, session: HueBridgeDevicesSession, bridge_manager: HueBridgeManager):
         self._session = session
+        self._bridge_manager = bridge_manager
 
     async def discover_bridges(self) -> HueBridgeDeviceDiscoveryInfo:
         """Attempts to discover all Hue Bridges that are available on the current network."""

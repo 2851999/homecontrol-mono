@@ -37,7 +37,7 @@ class HueBridgeSession:
 
 @asynccontextmanager
 async def create_hue_bridge_session(
-    connection_info: HueBridgeDeviceDiscoveryInfo | HueBridgeDeviceInDB, settings: HueSettings
+    connection_info: HueBridgeDeviceDiscoveryInfo | HueBridgeDeviceInDB,
 ) -> AsyncGenerator[HueBridgeSession, None]:
     """Creates a session for communicating with a specific Hue Bridge.
 
@@ -45,19 +45,15 @@ async def create_hue_bridge_session(
                             HueBridgeDeviceDiscoveryInfo then will assume it has not been authenticated yet. If it is
                             a HueBridgeDeviceInDB then will assume have already authenticated and should use the
                             provided credentials.
-    :param settings: Hue settings.
     """
-    # TODO: Authentication
     ssl_ctx = ssl.create_default_context(cafile=Path("hue_cert.pem"))
+    authenticated = isinstance(connection_info, HueBridgeDeviceInDB)
     async with AsyncClient(
         base_url=f"https://{connection_info.ip_address}:{connection_info.port}",
         verify=ssl_ctx,
+        headers={"hue-application-key": connection_info.username} if authenticated else None,
     ) as client:
         yield HueBridgeSession(
             client,
-            (
-                connection_info.id
-                if isinstance(connection_info, HueBridgeDeviceDiscoveryInfo)
-                else connection_info.identifier
-            ),
+            connection_info.identifier if authenticated else connection_info.id,
         )
