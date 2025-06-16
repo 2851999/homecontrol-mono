@@ -92,7 +92,7 @@ class AlertGet(BaseModel):
 
 class SignallingStatusGet(BaseModel):
     signal: str
-    estimated_end: str
+    estimated_end: str  # TODO: Datetime
     colors: list[ColorGet]
 
 
@@ -341,3 +341,125 @@ class LightPut(BaseModel):
     effects_v2: Optional[EffectsV2Put] = None
     timed_effects: Optional[TimedEffectsPut] = None
     powerup: Optional[PowerupPut] = None
+
+
+# --------------------------------------- SceneGet ---------------------------------------
+
+
+class TargetGet(BaseModel):
+    rid: str
+    rtype: str
+
+
+class ActionDimmingGet(BaseModel):
+    brightness: int
+
+
+class ActionColorGet(BaseModel):
+    xy: XYGet
+
+
+class ActionColorTemperatureGet(BaseModel):
+    mirek: int
+
+
+class ActionGradientGet(BaseModel):
+    points: list[GradientPointGet]
+    mode: str
+
+
+class ActionParametersGet(BaseModel):
+    color: Optional[ParametersColorGet] = None
+    color_temperature: Optional[ParametersColorTemperatureGet] = None
+    speed: Optional[float] = None
+
+
+class ActionEffectsV2ActionGet(BaseModel):
+    effect: str
+    parameters: Optional[ActionParametersGet] = None
+
+
+class EffectsV2BasicGet(BaseModel):
+    action: ActionEffectsV2ActionGet
+
+
+class ActionDynamicsGet(BaseModel):
+    duration: Optional[int] = None
+
+
+class ActionActionGet(BaseModel):
+    on: Optional[OnGet] = None
+    dimming: Optional[ActionDimmingGet] = None
+    color: Optional[ActionColorGet] = None
+    color_temperature: Optional[ActionColorTemperatureGet] = None
+    gradient: Optional[ActionGradientGet] = None
+    effects_v2: Optional[EffectsV2BasicGet] = None
+    dynamics: Optional[ActionDynamicsGet] = None
+
+
+class ActionGet(BaseModel):
+    target: TargetGet
+    action: ActionActionGet
+
+
+class PaletteColorColorGet(BaseModel):
+    xy: XYGet
+
+
+class PaletteDimmingGet(BaseModel):
+    brightness: int
+
+
+class PaletteColorGet(BaseModel):
+    color: PaletteColorColorGet
+    dimming: PaletteDimmingGet
+
+
+class ColorTemperatureColorTemperatureGet(BaseModel):
+    mirek: int
+
+
+class PaletteColorTemperatureGet(BaseModel):
+    color_temperature: ColorTemperatureColorTemperatureGet
+    dimming: PaletteDimmingGet
+
+
+class PaletteGet(BaseModel):
+    color: list[PaletteColorGet]
+    dimming: list[PaletteDimmingGet]
+    color_temperature: list[PaletteColorTemperatureGet]
+
+
+class ImageGet(BaseModel):
+    rid: str
+    rtype: str
+
+
+class SceneMetadataGet(BaseModel):
+    name: str
+    image: Optional[ImageGet] = None
+    appdata: Optional[str] = None
+
+
+class GroupGet(BaseModel):
+    rid: str
+    rtype: str
+
+
+class StatusGet(BaseModel):
+    active: str
+    last_recall: str  # TODO: Datetime
+
+
+class SceneGet(BaseModel):
+    type: Optional[Literal["scene"]]
+    id: str
+    actions: list[ActionGet]
+    palette: Optional[PaletteGet] = None
+    effects_v2: list[EffectsV2BasicGet]
+    recall: dict  # TODO: Unsure
+    metadata: SceneMetadataGet
+    group: GroupGet
+    speed: float
+    auto_dynamic: bool
+    status: StatusGet
