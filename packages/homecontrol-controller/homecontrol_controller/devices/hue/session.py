@@ -47,11 +47,18 @@ async def create_hue_bridge_session(
                             provided credentials.
     """
     ssl_ctx = ssl.create_default_context(cafile=Path("hue_cert.pem"))
+    # TODO: Explore if another way to get this to work - cant see current way to add custom hostname resolver, so just
+    # disable check for now
+    ssl_ctx.check_hostname = False
     authenticated = isinstance(connection_info, HueBridgeDeviceInDB)
     async with AsyncClient(
         base_url=f"https://{connection_info.ip_address}:{connection_info.port}",
         verify=ssl_ctx,
-        headers={"hue-application-key": connection_info.username} if authenticated else None,
+        headers=(
+            {"hue-application-key": connection_info.username, "Host": f"{connection_info.identifier}.local"}
+            if authenticated
+            else None
+        ),
     ) as client:
         yield HueBridgeSession(
             client,

@@ -22,6 +22,14 @@ class HueBridgeAPIPostResponse(BaseModel):
     error: Optional[HueBridgeAPIPostResponseError] = None
 
 
+# ------------------------------------- General other -------------------------------------
+
+
+class ResourceIdentifierGet(BaseModel):
+    rid: str
+    rtype: str
+
+
 # --------------------------------------- LightGet ---------------------------------------
 
 
@@ -47,8 +55,8 @@ class OnGet(BaseModel):
 
 
 class DimmingGet(BaseModel):
-    brightness: int
-    min_dim_level: Optional[int] = None
+    brightness: float
+    min_dim_level: Optional[float] = None
 
 
 class MirekSchemaGet(BaseModel):
@@ -57,7 +65,7 @@ class MirekSchemaGet(BaseModel):
 
 
 class ColorTemperatureGet(BaseModel):
-    mirek: int
+    mirek: Optional[int]
     mirek_valid: bool
     mirek_schema: MirekSchemaGet
 
@@ -155,7 +163,7 @@ class PowerupOnGet(BaseModel):
 
 
 class PowerupDimmingDimmingGet(BaseModel):
-    brightness: int
+    brightness: float
 
 
 class PowerupDimmingGet(BaseModel):
@@ -189,9 +197,9 @@ class LightGet(BaseModel):
     product_data: Optional[ProductDataGet] = None
     service_id: int
     on: OnGet
-    dimming: DimmingGet
-    color_temperature: ColorTemperatureGet
-    color: ColorGet
+    dimming: Optional[DimmingGet] = None
+    color_temperature: Optional[ColorTemperatureGet] = None
+    color: Optional[ColorGet] = None
     dynamics: Optional[DynamicsGet] = None
     alert: Optional[AlertGet] = None
     signalling: Optional[SignallingGet] = None
@@ -325,7 +333,7 @@ class PowerupPut(BaseModel):
 
 
 class LightPut(BaseModel):
-    type: Optional[Literal["light"]]
+    type: Optional[Literal["light"]] = None
     metadata: Optional[MetadataPut] = None
     identify: Optional[IdentifyPut] = None
     on: Optional[OnPut] = None
@@ -352,7 +360,7 @@ class TargetGet(BaseModel):
 
 
 class ActionDimmingGet(BaseModel):
-    brightness: int
+    brightness: float
 
 
 class ActionColorGet(BaseModel):
@@ -407,7 +415,7 @@ class PaletteColorColorGet(BaseModel):
 
 
 class PaletteDimmingGet(BaseModel):
-    brightness: int
+    brightness: float
 
 
 class PaletteColorGet(BaseModel):
@@ -447,16 +455,16 @@ class GroupGet(BaseModel):
 
 
 class StatusGet(BaseModel):
-    active: str
-    last_recall: str  # TODO: Datetime
+    active: Optional[str] = None
+    last_recall: Optional[str] = None  # TODO: Datetime
 
 
 class SceneGet(BaseModel):
-    type: Optional[Literal["scene"]]
+    type: Literal["scene"]
     id: str
     actions: list[ActionGet]
     palette: Optional[PaletteGet] = None
-    effects_v2: list[EffectsV2BasicGet]
+    effects_v2: list[EffectsV2BasicGet] = []
     recall: dict  # TODO: Unsure
     metadata: SceneMetadataGet
     group: GroupGet
