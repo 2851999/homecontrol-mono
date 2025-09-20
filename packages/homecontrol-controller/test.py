@@ -23,7 +23,7 @@ async def async_main():
 
     # print(await discover_hue_bridges(False))
 
-    print(await ACDiscovery.discover(settings.midea))
+    # print(await ACDiscovery.discover(settings.midea))
 
 
 asyncio.run(async_main())

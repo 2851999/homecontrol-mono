@@ -1,3 +1,5 @@
+from pydantic import TypeAdapter
+
 from homecontrol_controller.config import settings
 from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesSession
 from homecontrol_controller.devices.hue.discovery import HueBridgeDiscovery
@@ -20,8 +22,8 @@ class HueService:
 
         return await HueBridgeDiscovery.discover(use_mDNS=settings.hue.use_mDNS_discovery)
 
-    async def create(self, hue_bridge_device: HueBridgeDevicePost) -> HueBridgeDevice:
-        """Creates a Hue Bridge device
+    async def create_bridge(self, hue_bridge_device: HueBridgeDevicePost) -> HueBridgeDevice:
+        """Creates a Hue Bridge device.
 
         :param hue_bridge_device: Hue Bridge device to create.
         :returns: Created Hue Bridge device.
@@ -32,3 +34,11 @@ class HueService:
         )
         hue_bridge_device_out = await self._session.create(authenticated_device)
         return HueBridgeDevice.model_validate(hue_bridge_device_out)
+
+    async def get_all_bridges(self) -> list[HueBridgeDevice]:
+        """Returns a list of Hue Bridge devices.
+
+        :returns: List of Hue Bridge devices.
+        """
+
+        return TypeAdapter(list[HueBridgeDevice]).validate_python(await self._session.get_all())

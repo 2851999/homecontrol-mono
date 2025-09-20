@@ -14,3 +14,8 @@ async def discover_bridges(controller_service: ControllerServiceDep) -> list[Hue
 @hue.post("", summary="Create a Hue Bridge device", status_code=status.HTTP_201_CREATED)
 async def create(hue_bridge_device: HueBridgeDevicePost, controller_service: ControllerServiceDep) -> HueBridgeDevice:
     return await controller_service.devices.hue.create(hue_bridge_device)
+
+
+@hue.get("", summary="Get a list of Hue Bridge devices", status_code=status.HTTP_200_OK)
+async def get_all(controller_servcce: ControllerServiceDep) -> list[HueBridgeDevice]:
+    return await controller_servcce.devices.hue.get_all_bridges()

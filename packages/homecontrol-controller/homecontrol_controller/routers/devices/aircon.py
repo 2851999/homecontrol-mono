@@ -22,12 +22,12 @@ async def create(ac_device: ACDevicePost, controller_service: ControllerServiceD
     return await controller_service.devices.aircon.create(ac_device)
 
 
-@aircon.get("", summary="Get a list of AC devices", status_code=status.HTTP_201_CREATED)
+@aircon.get("", summary="Get a list of AC devices", status_code=status.HTTP_200_OK)
 async def get_all(controller_service: ControllerServiceDep) -> list[ACDevice]:
     return await controller_service.devices.aircon.get_all()
 
 
-@aircon.get("/{device_id}/state", summary="Get the current state of an AC device", status_code=status.HTTP_201_CREATED)
+@aircon.get("/{device_id}/state", summary="Get the current state of an AC device", status_code=status.HTTP_200_OK)
 async def get_state(device_id: str, controller_service: ControllerServiceDep) -> ACDeviceState:
     return await controller_service.devices.aircon.get_state(device_id)
 
