@@ -9,6 +9,7 @@ from homecontrol_controller.devices.hue.api.schemas import (
     LightPut,
     ResourceIdentifierGet,
     SceneGet,
+    ScenePut,
 )
 from homecontrol_controller.exceptions import DeviceAuthenticationError
 
@@ -90,3 +91,6 @@ class HueBridgeAPISession:
 
     async def get_scene(self, scene_id: str) -> SceneGet:
         return (await self._get_resource(f"/clip/v2/resource/scene/{scene_id}", SceneGet))[0]
+
+    async def put_scene(self, scene_id: str, data: ScenePut) -> ResourceIdentifierGet:
+        return await self._put_resource(f"/clip/v2/resource/scene/{scene_id}", data)

@@ -213,7 +213,7 @@ class LightGet(BaseModel):
 # --------------------------------------- LightPut ---------------------------------------
 
 
-class MetadataPut(BaseModel):
+class LightMetadataPut(BaseModel):
     name: Optional[str] = None
     function: Optional[Literal["functional", "decorative", "mixed", "unknown"]]
 
@@ -253,7 +253,7 @@ class ColorPut(BaseModel):
     xy: Optional[XYPut] = None
 
 
-class DynamicsPut(BaseModel):
+class LightDynamicsPut(BaseModel):
     duration: Optional[int] = None
     speed: Optional[float] = None
 
@@ -334,7 +334,7 @@ class PowerupPut(BaseModel):
 
 class LightPut(BaseModel):
     type: Optional[Literal["light"]] = None
-    metadata: Optional[MetadataPut] = None
+    metadata: Optional[LightMetadataPut] = None
     identify: Optional[IdentifyPut] = None
     on: Optional[OnPut] = None
     dimming: Optional[DimmingPut] = None
@@ -342,7 +342,7 @@ class LightPut(BaseModel):
     color_temperature: Optional[ColorTemperaturePut] = None
     color_temperature_delta: Optional[ColorTemperatureDeltaPut] = None
     color: Optional[ColorPut] = None
-    dynamics: Optional[DynamicsPut] = None
+    dynamics: Optional[LightDynamicsPut] = None
     alert: Optional[AlertPut] = None
     signalling: Optional[SignallingPut] = None
     gradient: Optional[GradientPut] = None
@@ -471,3 +471,68 @@ class SceneGet(BaseModel):
     speed: float
     auto_dynamic: bool
     status: StatusGet
+
+
+# --------------------------------------- ScenePut ---------------------------------------
+
+
+class TargetPut(BaseModel):
+    rid: str
+    rtype: str
+
+
+class SceneActionActionDynamicsPut(BaseModel):
+    duration: Optional[int] = None
+
+
+class ActionActionPut(BaseModel):
+    on: Optional[OnPut] = None
+    dimming: Optional[DimmingPut] = None
+    color: Optional[ColorPut] = None
+    color_temperature: Optional[ColorTemperaturePut] = None
+    gradient: Optional[GradientPut] = None
+    effects_v2: Optional[EffectsV2Put] = None
+    dynamics: Optional[SceneActionActionDynamicsPut] = None
+
+
+class ActionPut(BaseModel):
+    target: TargetPut
+    action: ActionActionPut
+
+
+class ColorPalettePut(BaseModel):
+    color: ColorPut
+    dimming: DimmingPut
+
+
+class ColorTemperaturePalettePut(BaseModel):
+    color_temperature: ColorTemperaturePut
+    dimming: DimmingPut
+
+
+class PalettePut(BaseModel):
+    color: list[ColorPalettePut]
+    dimming: DimmingPut
+    color_temperature: list[ColorTemperaturePalettePut]
+    effects_v2: list[EffectsV2Put]
+
+
+class RecallPut(BaseModel):
+    action: Optional[Literal["active", "dynamic", "static"]] = None
+    duration: Optional[int] = None
+    dimming: Optional[DimmingPut] = None
+
+
+class SceneMetadataPut(BaseModel):
+    name: Optional[str] = None
+    appdata: Optional[str] = None
+
+
+class ScenePut(BaseModel):
+    type: Optional[Literal["scene"]] = None
+    actions: Optional[list[ActionPut]] = None
+    palette: Optional[PalettePut] = None
+    recall: Optional[RecallPut] = None
+    metadata: Optional[LightMetadataPut] = None
+    speed: Optional[float] = None
+    auto_dynamic: Optional[bool] = None

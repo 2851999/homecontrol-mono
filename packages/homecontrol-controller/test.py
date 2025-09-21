@@ -8,7 +8,7 @@ from homecontrol_controller.config import settings
 from homecontrol_controller.database.core import ControllerDatabaseSession
 from homecontrol_controller.devices.aircon.discovery import ACDiscovery
 from homecontrol_controller.devices.aircon.manager import ACManager
-from homecontrol_controller.devices.hue.api.schemas import LightPut
+from homecontrol_controller.devices.hue.api.schemas import LightPut, ScenePut
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
 from homecontrol_controller.routers.devices.core import devices
 
@@ -44,6 +44,9 @@ async def async_main():
         # print(await session.api.put_light("9c76db66-26ad-43ee-b3b1-915be3060a4c", LightPut(on={"on": False})))
         # print(await session.api.get_scenes())
         # print(await session.api.get_scene("2dafd662-78cc-4594-8daf-b211434729a5"))
+        print(
+            await session.api.put_scene("b711b49f-0bb7-4a9a-b730-2bc6ca29c450", ScenePut(recall={"action": "active"}))
+        )
 
 
 asyncio.run(async_main())
