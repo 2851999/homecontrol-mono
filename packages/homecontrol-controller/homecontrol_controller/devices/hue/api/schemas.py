@@ -38,7 +38,7 @@ class OwnerGet(BaseModel):
     rtype: str
 
 
-class MetadataGet(BaseModel):
+class LightMetadataGet(BaseModel):
     name: str
     fixed_mired: Optional[int] = None
     function: str
@@ -193,7 +193,7 @@ class LightGet(BaseModel):
     type: Literal["light"]
     id: str
     owner: OwnerGet
-    metadata: MetadataGet
+    metadata: LightMetadataGet
     product_data: Optional[ProductDataGet] = None
     service_id: int
     on: OnGet
@@ -536,3 +536,38 @@ class ScenePut(BaseModel):
     metadata: Optional[LightMetadataPut] = None
     speed: Optional[float] = None
     auto_dynamic: Optional[bool] = None
+
+
+# --------------------------------------- RoomGet ---------------------------------------
+
+
+class RoomMetadataGet(BaseModel):
+    name: str
+    archetype: str
+
+
+class RoomGet(BaseModel):
+    type: Literal["room"]
+    id: str
+    children: list[ResourceIdentifierGet]
+    services: list[ResourceIdentifierGet]
+    metadata: RoomMetadataGet
+
+
+# --------------------------------------- RoomPut ---------------------------------------
+
+
+class ResourceIdentifierPut(BaseModel):
+    rid: str
+    rtype: str
+
+
+class RoomMetadataPut(BaseModel):
+    name: Optional[str] = None
+    archetype: Optional[str] = None
+
+
+class RoomPut(BaseModel):
+    type: Optional[Literal["room"]] = None
+    children: Optional[list[ResourceIdentifierPut]] = None
+    metadata: Optional[RoomMetadataPut]

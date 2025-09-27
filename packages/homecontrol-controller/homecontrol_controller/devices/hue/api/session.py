@@ -8,6 +8,8 @@ from homecontrol_controller.devices.hue.api.schemas import (
     LightGet,
     LightPut,
     ResourceIdentifierGet,
+    RoomGet,
+    RoomPut,
     SceneGet,
     ScenePut,
 )
@@ -94,3 +96,14 @@ class HueBridgeAPISession:
 
     async def put_scene(self, scene_id: str, data: ScenePut) -> ResourceIdentifierGet:
         return await self._put_resource(f"/clip/v2/resource/scene/{scene_id}", data)
+
+    # --------------------------------------- Rooms ---------------------------------------
+
+    async def get_rooms(self) -> list[RoomGet]:
+        return await self._get_resource("/clip/v2/resource/room", RoomGet)
+
+    async def get_room(self, room_id: str) -> RoomGet:
+        return (await self._get_resource(f"/clip/v2/resource/room/{room_id}", RoomGet))[0]
+
+    async def put_room(self, room_id, data: RoomPut) -> ResourceIdentifierGet:
+        return await self._put_resource(f"/clip/v2/resource/room/{room_id}", data)
