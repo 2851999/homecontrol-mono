@@ -4,6 +4,8 @@ from httpx import AsyncClient
 from pydantic import BaseModel, TypeAdapter
 
 from homecontrol_controller.devices.hue.api.schemas import (
+    GroupedLightGet,
+    GroupedLightPut,
     HueBridgeAPIPostResponse,
     LightGet,
     LightPut,
@@ -107,3 +109,14 @@ class HueBridgeAPISession:
 
     async def put_room(self, room_id, data: RoomPut) -> ResourceIdentifierGet:
         return await self._put_resource(f"/clip/v2/resource/room/{room_id}", data)
+
+    # --------------------------------------- GroupedLights ---------------------------------------
+
+    async def get_grouped_lights(self) -> list[GroupedLightGet]:
+        return await self._get_resource("/clip/v2/resource/grouped_light", GroupedLightGet)
+
+    async def get_grouped_light(self, grouped_light_id: str) -> GroupedLightGet:
+        return (await self._get_resource(f"/clip/v2/resource/grouped_light/{grouped_light_id}", GroupedLightGet))[0]
+
+    async def put_grouped_light(self, grouped_light_id: str, data: GroupedLightPut) -> GroupedLightPut:
+        return await self._put_resource(f"/clip/v2/resource/grouped_light/{grouped_light_id}", data)

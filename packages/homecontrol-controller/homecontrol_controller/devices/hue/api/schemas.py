@@ -1,6 +1,6 @@
-from typing import Literal, Optional
+from typing import Annotated, Literal, Optional, TypeVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, BeforeValidator
 
 # -------------------- Post response from a Hue Bridge's /api endpoint --------------------
 
@@ -87,7 +87,7 @@ class ColorGet(BaseModel):
     gamut_type: str
 
 
-class DynamicsGet(BaseModel):
+class LightDynamicsGet(BaseModel):
     status: str
     status_values: list[str]
     speed: float
@@ -200,7 +200,7 @@ class LightGet(BaseModel):
     dimming: Optional[DimmingGet] = None
     color_temperature: Optional[ColorTemperatureGet] = None
     color: Optional[ColorGet] = None
-    dynamics: Optional[DynamicsGet] = None
+    dynamics: Optional[LightDynamicsGet] = None
     alert: Optional[AlertGet] = None
     signalling: Optional[SignallingGet] = None
     mode: str
@@ -227,7 +227,7 @@ class OnPut(BaseModel):
 
 
 class DimmingPut(BaseModel):
-    brightness: Optional[int] = None
+    brightness: Optional[float] = None
 
 
 class DimmingDeltaPut(BaseModel):
@@ -571,3 +571,69 @@ class RoomPut(BaseModel):
     type: Optional[Literal["room"]] = None
     children: Optional[list[ResourceIdentifierPut]] = None
     metadata: Optional[RoomMetadataPut]
+
+
+# ----------------------------------- GroupedLightGet -----------------------------------
+
+
+# Hue seems to give various entities as {} in grouped lights, this type auto converts them to None for consistency with
+# the others
+T = TypeVar("T")
+LeniantOptional = Annotated[Optional[T], BeforeValidator(lambda x: x or None)]
+
+
+class GroupedLightDimmingGet(BaseModel):
+    brightness: float
+
+
+class DimmingDeltaGet(BaseModel):
+    action: Literal["up", "down", "stop"] = None
+    brightness_delta: int = None
+
+
+class ColorTemperatureDeltaGet(BaseModel):
+    action: Literal["up", "down", "stop"]
+    mirek_delta: int = None
+
+
+class GroupedLightSignalingGet(BaseModel):
+    signal_values: list[str]
+
+
+class GroupedLightDynamicsGet(BaseModel):
+    duration: int
+
+
+class GroupedLightGet(BaseModel):
+    type: Literal["grouped_light"]
+    id: str
+    owner: OwnerGet
+    on: Optional[OnGet] = None
+    dimming: Optional[GroupedLightDimmingGet] = None
+    dimming_delta: LeniantOptional[DimmingDeltaGet] = None
+    color_temperature: LeniantOptional[ColorTemperatureGet] = None
+    color_temperature_delta: LeniantOptional[ColorTemperatureDeltaGet] = None
+    color: LeniantOptional[ColorGet] = None
+    alert: Optional[AlertGet] = None
+    signalling: Optional[GroupedLightSignalingGet] = None
+    dyanmics: LeniantOptional[GroupedLightDynamicsGet] = None
+
+
+# ----------------------------------- GroupedLightPut -----------------------------------
+
+
+class GroupedLightDynamicsPut(BaseModel):
+    duration: Optional[int] = None
+
+
+class GroupedLightPut(BaseModel):
+    type: Optional[Literal["grouped_light"]] = None
+    on: Optional[OnPut] = None
+    dimming: Optional[DimmingPut] = None
+    dimming_delta: Optional[DimmingDeltaPut] = None
+    color_temperature: Optional[ColorTemperaturePut] = None
+    color_temperature_delta: Optional[ColorTemperatureDeltaPut] = None
+    color: Optional[ColorPut] = None
+    alert: Optional[AlertPut] = None
+    signaling: Optional[SignallingPut] = None
+    dyanmics: Optional[GroupedLightDynamicsPut] = None
