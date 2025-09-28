@@ -4,6 +4,7 @@ from httpx import AsyncClient
 from pydantic import BaseModel, TypeAdapter
 
 from homecontrol_controller.devices.hue.api.schemas import (
+    DeviceGet,
     GroupedLightGet,
     GroupedLightPut,
     HueBridgeAPIPostResponse,
@@ -29,7 +30,7 @@ class HueBridgeAPISession:
     def __init__(self, client: AsyncClient, bridge_identifier: str):
         """Intitialise this session for communicating with a specific Hue Bridge.
 
-        :param client: AsyncClient form httpx.
+        :param client: AsyncClient from httpx.
         :param bridge_identifier: Identifier of the Hue Bridge - used for SSL verification.
         """
         self._client = client
@@ -110,7 +111,7 @@ class HueBridgeAPISession:
     async def put_room(self, room_id, data: RoomPut) -> ResourceIdentifierGet:
         return await self._put_resource(f"/clip/v2/resource/room/{room_id}", data)
 
-    # --------------------------------------- GroupedLights ---------------------------------------
+    # ----------------------------------- GroupedLights -----------------------------------
 
     async def get_grouped_lights(self) -> list[GroupedLightGet]:
         return await self._get_resource("/clip/v2/resource/grouped_light", GroupedLightGet)
@@ -120,3 +121,11 @@ class HueBridgeAPISession:
 
     async def put_grouped_light(self, grouped_light_id: str, data: GroupedLightPut) -> GroupedLightPut:
         return await self._put_resource(f"/clip/v2/resource/grouped_light/{grouped_light_id}", data)
+
+    # --------------------------------------- Devices ---------------------------------------
+
+    async def get_devices(self) -> list[DeviceGet]:
+        return await self._get_resource("/clip/v2/resource/device", DeviceGet)
+
+    async def get_device(self, device_id: str) -> DeviceGet:
+        return (await self._get_resource(f"/clip/v2/resource/device/{device_id}", DeviceGet))[0]

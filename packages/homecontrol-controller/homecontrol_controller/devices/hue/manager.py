@@ -1,23 +1,23 @@
 from homecontrol_controller.database.models import HueBridgeDeviceInDB
-from homecontrol_controller.devices.hue.bridge import HueBridgeDevice
+from homecontrol_controller.devices.hue.bridge import HueBridge
 from homecontrol_controller.exceptions import DeviceNotFoundError
 
 
 class HueBridgeManager:
     """Manages a set of Hue Bridge devices."""
 
-    _devices: dict[str, HueBridgeDevice]
+    _devices: dict[str, HueBridge]
 
     def __init__(self):
         self._devices = {}
 
-    def add(self, hue_bridge_device: HueBridgeDeviceInDB) -> HueBridgeDevice:
+    def add(self, hue_bridge_device: HueBridgeDeviceInDB) -> HueBridge:
         """Adds a Hue Bridge device to this manager.
 
         :param hue_bridge_device: Database model of the device to add.
         :returns: The Hue Bridge device.
         """
-        device = HueBridgeDevice(hue_bridge_device)
+        device = HueBridge(hue_bridge_device)
         self._devices[str(hue_bridge_device.id)] = device
         return device
 
@@ -30,7 +30,7 @@ class HueBridgeManager:
         for hue_bridge_device in hue_bridge_devices:
             self.add(hue_bridge_device)
 
-    def get(self, device_id: str) -> HueBridgeDevice:
+    def get(self, device_id: str) -> HueBridge:
         """Returns a Hue Bridge device given its ID.
 
         :param device_id: ID of the Hue Bridge device to get.

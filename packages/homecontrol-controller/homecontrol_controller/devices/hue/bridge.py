@@ -5,7 +5,7 @@ from homecontrol_controller.database.models import HueBridgeDeviceInDB
 from homecontrol_controller.devices.hue.session import HueBridgeSession, create_hue_bridge_session
 
 
-class HueBridgeDevice:
+class HueBridge:
     """A physical Hue Bridge device."""
 
     _info: HueBridgeDeviceInDB

@@ -2,6 +2,7 @@ from pydantic import TypeAdapter
 
 from homecontrol_controller.config import settings
 from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesSession
+from homecontrol_controller.devices.hue.bridge import HueBridge
 from homecontrol_controller.devices.hue.discovery import HueBridgeDiscovery
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
 from homecontrol_controller.schemas.hue import HueBridgeDevice, HueBridgeDeviceDiscoveryInfo, HueBridgeDevicePost
@@ -42,3 +43,12 @@ class HueService:
         """
 
         return TypeAdapter(list[HueBridgeDevice]).validate_python(await self._session.get_all())
+
+    async def get_bridge_device(self, bridge_id: str) -> HueBridge:
+        """Returns a Hue Bridge device.
+
+        :param bridge_id: ID of the Hue Bridge to obtain.
+        :returns: The Hue Bridge device.
+        """
+
+        return self._bridge_manager.get(bridge_id)

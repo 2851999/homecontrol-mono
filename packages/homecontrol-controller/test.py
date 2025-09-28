@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 from homecontrol_base_api.database.core import get_database
 from homecontrol_base_api.exceptions import BaseAPIError, handle_base_api_error
@@ -39,6 +40,7 @@ async def async_main():
 
     device = hue_bridge_manager.get("b645c0cc-1890-4878-8df9-6f12f9cae5b4")
     async with device.connect() as session:
+        start_time = time.time()
         # print(await session.api.get_lights())
         # print(await session.api.get_light("56c4f442-0952-4a75-ac29-7259970b3139"))
         # print(await session.api.put_light("9c76db66-26ad-43ee-b3b1-915be3060a4c", LightPut(on={"on": False})))
@@ -51,11 +53,16 @@ async def async_main():
         # print(await session.api.get_room("e7e6883f-85ae-4d28-8dab-7b783445acad"))
         # print(await session.api.get_grouped_lights())
         # print(await session.api.get_grouped_light("42e245c4-ef2a-447c-9b55-0f657862b0ac"))
-        print(
-            await session.api.put_grouped_light(
-                "42e245c4-ef2a-447c-9b55-0f657862b0ac", GroupedLightPut(on={"on": False})
-            )
-        )
+        # print(
+        #     await session.api.put_grouped_light(
+        #         "42e245c4-ef2a-447c-9b55-0f657862b0ac", GroupedLightPut(on={"on": False})
+        #     )
+        # )
+        # print(await session.api.get_devices())
+        # print(await session.api.get_device("c52f74ba-f7c2-4651-8a5d-6bdc6e2319d1"))
+        # print(await session.rooms.get_all())
+        print(await session.rooms.get("e7e6883f-85ae-4d28-8dab-7b783445acad"))
+        print(f"Time taken: {time.time() - start_time}")
 
 
 asyncio.run(async_main())

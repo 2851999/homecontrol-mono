@@ -44,7 +44,7 @@ class LightMetadataGet(BaseModel):
     function: str
 
 
-class ProductDataGet(BaseModel):
+class LightProductDataGet(BaseModel):
     name: Optional[str] = None
     archetype: Optional[str] = None
     function: str
@@ -194,7 +194,7 @@ class LightGet(BaseModel):
     id: str
     owner: OwnerGet
     metadata: LightMetadataGet
-    product_data: Optional[ProductDataGet] = None
+    product_data: Optional[LightProductDataGet] = None
     service_id: int
     on: OnGet
     dimming: Optional[DimmingGet] = None
@@ -637,3 +637,43 @@ class GroupedLightPut(BaseModel):
     alert: Optional[AlertPut] = None
     signaling: Optional[SignallingPut] = None
     dyanmics: Optional[GroupedLightDynamicsPut] = None
+
+
+# -------------------------------------- DeviceGet --------------------------------------
+
+
+class DeviceProductDataGet(BaseModel):
+    model_id: str
+    manufacturer_name: str
+    product_name: str
+    product_archetype: str
+    certified: bool
+    software_version: str
+    hardware_platform_type: Optional[str] = None
+
+
+class DeviceMetadataGet(BaseModel):
+    name: str
+    archetype: str
+
+
+class UserTestGet(BaseModel):
+    status: str
+    usertest: bool
+
+
+class DeviceModeGet(BaseModel):
+    status: str
+    mode: str
+    mode_values: list[dict]
+
+
+class DeviceGet(BaseModel):
+    type: Literal["device"]
+    id: str
+    product_data: DeviceProductDataGet
+    metadata: DeviceMetadataGet
+    identify: Optional[dict] = None
+    usertest: Optional[UserTestGet] = None
+    device_mode: Optional[DeviceModeGet] = None
+    services: list[ResourceIdentifierGet]

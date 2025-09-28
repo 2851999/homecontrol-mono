@@ -5,9 +5,9 @@ from typing import AsyncGenerator, Optional
 
 from httpx import AsyncClient
 
-from homecontrol_controller.config import HueSettings
 from homecontrol_controller.database.models import HueBridgeDeviceInDB
 from homecontrol_controller.devices.hue.api.session import HueBridgeAPISession
+from homecontrol_controller.devices.hue.services.room import HueRoomService
 from homecontrol_controller.schemas.hue import HueBridgeDeviceDiscoveryInfo
 
 
@@ -17,11 +17,12 @@ class HueBridgeSession:
     _client: AsyncClient
     _bridge_identifier: str
     _api: Optional[HueBridgeAPISession] = None
+    _rooms: Optional[HueRoomService] = None
 
     def __init__(self, client: AsyncClient, bridge_identifier: str):
         """Intitialise this session for communicating with a specific Hue Bridge.
 
-        :param client: AsyncClient form httpx.
+        :param client: AsyncClient from httpx.
         :param bridge_identifier: Identifier of the Hue Bridge - used for SSL verification.
         """
 
@@ -33,6 +34,12 @@ class HueBridgeSession:
         if not self._api:
             self._api = HueBridgeAPISession(self._client, self._bridge_identifier)
         return self._api
+
+    @property
+    def rooms(self) -> HueRoomService:
+        if not self._rooms:
+            self._rooms = HueRoomService(self.api)
+        return self._rooms
 
 
 @asynccontextmanager

@@ -1,7 +1,12 @@
 from fastapi import APIRouter, status
 
 from homecontrol_controller.dependencies import ControllerServiceDep
-from homecontrol_controller.schemas.hue import HueBridgeDevice, HueBridgeDeviceDiscoveryInfo, HueBridgeDevicePost
+from homecontrol_controller.schemas.hue import (
+    HueBridgeDevice,
+    HueBridgeDeviceDiscoveryInfo,
+    HueBridgeDevicePost,
+    HueRoom,
+)
 
 hue = APIRouter(prefix="/hue", tags=["Hue"])
 
@@ -16,6 +21,20 @@ async def create(hue_bridge_device: HueBridgeDevicePost, controller_service: Con
     return await controller_service.devices.hue.create(hue_bridge_device)
 
 
-@hue.get("", summary="Get a list of Hue Bridge devices", status_code=status.HTTP_200_OK)
-async def get_all(controller_servcce: ControllerServiceDep) -> list[HueBridgeDevice]:
-    return await controller_servcce.devices.hue.get_all_bridges()
+@hue.get("", summary="Get a list of Hue Bridge devices")
+async def get_all(controller_service: ControllerServiceDep) -> list[HueBridgeDevice]:
+    return await controller_service.devices.hue.get_all_bridges()
+
+
+@hue.get("/{bridge_id}/rooms", summary="Get a list rooms managed by the Hue Bridge")
+async def get_all_rooms(bridge_id: str, controller_service: ControllerServiceDep) -> list[HueRoom]:
+    bridge = await controller_service.devices.hue.get_bridge_device(bridge_id)
+    async with bridge.connect() as session:
+        return await session.rooms.get_all()
+
+
+@hue.get("/{bridge_id}/rooms/{room_id}", summary="Get a rooms managed by the Hue Bridge")
+async def get_room(bridge_id: str, room_id: str, controller_service: ControllerServiceDep) -> HueRoom:
+    bridge = await controller_service.devices.hue.get_bridge_device(bridge_id)
+    async with bridge.connect() as session:
+        return await session.rooms.get(room_id)
