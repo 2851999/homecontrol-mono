@@ -61,7 +61,7 @@ class ACService:
         return await self._manager.get(device_id).get_state()
 
     async def update_state(self, device_id: str, state_patch: ACDeviceStatePatch) -> ACDeviceState:
-        """Obtains an AC device's current state.
+        """Updates an AC device's current state.
 
         :param device_id: ID of the AC device to change the state of.
         :param state_patch: Change of state to apply to the device.

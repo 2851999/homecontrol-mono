@@ -41,7 +41,7 @@ class HueScene(BaseModel):
 
 
 class HueRoom(BaseModel):
-    """Schema for a room managed by a Hue bridge."""
+    """Schema for a room managed by a Hue Bridge."""
 
     id: str
     name: str
@@ -51,7 +51,7 @@ class HueRoom(BaseModel):
 
 
 class HueGroupedLightState(BaseModel):
-    """Schema for the state of a grouped light managed by a Hue bridge."""
+    """Schema for the state of a grouped light managed by a Hue Bridge."""
 
     id: str
     on: bool
@@ -59,13 +59,14 @@ class HueGroupedLightState(BaseModel):
 
 
 class HueLightState(BaseModel):
-    """Schema for the state of a light managed by a Hue bridge."""
+    """Schema for the state of a light managed by a Hue Bridge."""
 
     id: str
     name: str
+
     on: bool
 
-    # Will be None for a Hue smart plug
+    # The following will be None for a Hue smart plug
     brightness: Optional[float] = None
     colour_temperature: Optional[int] = None
     colour: Optional[HueColour] = None
@@ -84,8 +85,36 @@ class HueSceneState(BaseModel):
 
 
 class HueRoomState(BaseModel):
-    """Schema for the state of a room managed by a Hue bridge."""
+    """Schema for the state of a room managed by a Hue Bridge."""
 
     grouped_light: HueGroupedLightState
     lights: list[HueLightState]
     scenes: list[HueSceneState]
+
+
+class HueGroupedLightStatePatch(BaseModel):
+    """Schema for a patch request on a grouped light within a room managed by a Hue Bridge."""
+
+    on: Optional[bool] = None
+    brightness: Optional[float] = None
+
+
+class HueLightStatePatch(BaseModel):
+    """Schema for a patch request on a light within a room managed by a Hue Bridge."""
+
+    on: Optional[bool] = None
+
+    # The following will not work for a Hue smart plug
+    brightness: Optional[float] = None
+    colour_temperature: Optional[int] = None
+    colour: Optional[HueColour] = None
+
+
+class HueRoomStatePatch(BaseModel):
+    """Schema for a patch request on the state of a room managed by a Hue Bridge."""
+
+    grouped_light: Optional[HueGroupedLightStatePatch] = None
+    lights: Optional[dict[str, HueLightStatePatch]] = None
+
+    # When specified will recall a sscene given its ID (after any other updates)
+    scene_id: Optional[str] = None

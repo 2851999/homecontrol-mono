@@ -1,15 +1,28 @@
 import asyncio
+from numbers import Real
 from typing import Optional
 
-from homecontrol_controller.devices.hue.api.schemas import RoomGet
+from homecontrol_controller.devices.hue.api.schemas import (
+    ColorPut,
+    ColorTemperaturePut,
+    DimmingPut,
+    GroupedLightPut,
+    LightPut,
+    OnPut,
+    RecallPut,
+    RoomGet,
+    ScenePut,
+)
 from homecontrol_controller.devices.hue.api.session import HueBridgeAPISession
 from homecontrol_controller.devices.hue.colour import HueColour
 from homecontrol_controller.schemas.hue import (
     HueGroupedLightState,
     HueLight,
     HueLightState,
+    HueLightStatePatch,
     HueRoom,
     HueRoomState,
+    HueRoomStatePatch,
     HueScene,
     HueSceneState,
 )
@@ -128,3 +141,63 @@ class HueRoomService:
             lights=light_states,
             scenes=scene_states,
         )
+
+    async def _update_light_state(self, light_id: str, state_patch: HueLightStatePatch):
+        """Updates the state of a light in a room managed by the Hue Bridge given its ID.
+
+        :param light_id: ID of the light to change the state of.
+        :param state_patch: Change of state to apply to the light.
+        """
+
+        await self._session.put_light(
+            light_id=light_id,
+            data=LightPut(
+                on=OnPut(on=state_patch.on) if state_patch.on is not None else None,
+                dimming=DimmingPut(brightness=state_patch.brightness) if state_patch.brightness is not None else None,
+                color_temperature=(
+                    ColorTemperaturePut(mirek=state_patch.colour_temperature)
+                    if state_patch.colour_temperature is not None
+                    else None
+                ),
+                color=ColorPut(xy=state_patch.colour.to_xy()) if state_patch.colour is not None else None,
+            ),
+        )
+
+    async def update_state(self, room_id: str, state_patch: HueRoomStatePatch) -> HueRoomState:
+        """Updates the state of a room managed by the Hue Bridge given its ID.
+
+        :param room_id: ID of the room to change the state of.
+        :param state_patch: Change of state to apply to the room.
+        :return: The new state of the room.
+        """
+
+        # Obtain the room itself
+        room = await self.get(room_id)
+
+        # Update the grouped light state
+        if state_patch.grouped_light:
+            await self._session.put_grouped_light(
+                room.grouped_light_id,
+                GroupedLightPut(
+                    on=OnPut(on=state_patch.grouped_light.on) if state_patch.grouped_light.on is not None else None,
+                    dimming=(
+                        DimmingPut(brightness=state_patch.grouped_light.brightness)
+                        if state_patch.grouped_light.brightness is not None
+                        else None
+                    ),
+                ),
+            )
+        # Update the light states
+        if state_patch.lights:
+            await asyncio.gather(
+                *(
+                    self._update_light_state(light_id, light_state_patch)
+                    for light_id, light_state_patch in state_patch.lights.items()
+                )
+            )
+        # Recall a scene if requested (Always use active here to start any effects automatically)
+        if state_patch.scene_id:
+            await self._session.put_scene(state_patch.scene_id, ScenePut(recall=RecallPut(action="active")))
+
+        # Return the new state of the room
+        return await self.get_state(room_id)

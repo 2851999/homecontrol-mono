@@ -74,7 +74,7 @@ class HueBridgeAPISession:
         :return: Pydantic model containing the returned data.
         """
 
-        response = await self._client.put(endpoint, json=resource.model_dump(exclude_unset=True))
+        response = await self._client.put(endpoint, json=resource.model_dump(exclude_none=True))
         response.raise_for_status()
         return TypeAdapter(list[ResourceIdentifierGet]).validate_python(response.json()["data"])[0]
 
@@ -119,7 +119,7 @@ class HueBridgeAPISession:
     async def get_grouped_light(self, grouped_light_id: str) -> GroupedLightGet:
         return (await self._get_resource(f"/clip/v2/resource/grouped_light/{grouped_light_id}", GroupedLightGet))[0]
 
-    async def put_grouped_light(self, grouped_light_id: str, data: GroupedLightPut) -> GroupedLightPut:
+    async def put_grouped_light(self, grouped_light_id: str, data: GroupedLightPut) -> ResourceIdentifierGet:
         return await self._put_resource(f"/clip/v2/resource/grouped_light/{grouped_light_id}", data)
 
     # --------------------------------------- Devices ---------------------------------------
