@@ -6,6 +6,7 @@ from homecontrol_controller.schemas.hue import (
     HueBridgeDeviceDiscoveryInfo,
     HueBridgeDevicePost,
     HueRoom,
+    HueRoomState,
 )
 
 hue = APIRouter(prefix="/hue", tags=["Hue"])
@@ -33,8 +34,15 @@ async def get_all_rooms(bridge_id: str, controller_service: ControllerServiceDep
         return await session.rooms.get_all()
 
 
-@hue.get("/{bridge_id}/rooms/{room_id}", summary="Get a rooms managed by the Hue Bridge")
+@hue.get("/{bridge_id}/rooms/{room_id}", summary="Get a room managed by the Hue Bridge")
 async def get_room(bridge_id: str, room_id: str, controller_service: ControllerServiceDep) -> HueRoom:
     bridge = await controller_service.devices.hue.get_bridge_device(bridge_id)
     async with bridge.connect() as session:
         return await session.rooms.get(room_id)
+
+
+@hue.get("/{bridge_id}/rooms/{room_id}/state", summary="Get a room state of a room managed by the Hue Bridge")
+async def get_room_state(bridge_id: str, room_id: str, controller_service: ControllerServiceDep) -> HueRoomState:
+    bridge = await controller_service.devices.hue.get_bridge_device(bridge_id)
+    async with bridge.connect() as session:
+        return await session.rooms.get_state(room_id)
