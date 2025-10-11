@@ -4,6 +4,7 @@ from homecontrol_base_api.database.core import DatabaseSession
 
 from homecontrol_controller.database.ac_devices import ACDevicesSession
 from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesSession
+from homecontrol_controller.database.rooms import RoomsSession
 
 
 class ControllerDatabaseSession(DatabaseSession):
@@ -11,6 +12,7 @@ class ControllerDatabaseSession(DatabaseSession):
 
     _ac_devices: Optional[ACDevicesSession] = None
     _hue_bridge_devices: Optional[HueBridgeDevicesSession] = None
+    _rooms: Optional[RoomsSession] = None
 
     @property
     def ac_devices(self) -> ACDevicesSession:
@@ -23,3 +25,9 @@ class ControllerDatabaseSession(DatabaseSession):
         if not self._hue_bridge_devices:
             self._hue_bridge_devices = HueBridgeDevicesSession(self._session)
         return self._hue_bridge_devices
+
+    @property
+    def rooms(self) -> RoomsSession:
+        if not self._rooms:
+            self._rooms = RoomsSession(self._session)
+        return self._rooms

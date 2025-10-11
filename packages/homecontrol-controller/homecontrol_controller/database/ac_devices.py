@@ -2,7 +2,9 @@ from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import RecordNotFoundError
-from sqlalchemy import delete, select
+from sqlalchemy import delete
+from sqlalchemy import exc as sqlalchemy_exc
+from sqlalchemy import select
 
 from homecontrol_controller.database.models import ACDeviceInDB
 
@@ -34,7 +36,7 @@ class ACDevicesSession(DatabaseSession):
             return (
                 await self._session.execute(select(ACDeviceInDB).where(ACDeviceInDB.id == UUID(device_id)))
             ).scalar_one()
-        except (exc.NoResultFound, ValueError) as exc:
+        except (sqlalchemy_exc.NoResultFound, ValueError) as exc:
             raise RecordNotFoundError(f"No AC device found with the ID '{device_id}'") from exc
 
     async def get_all(self) -> list[ACDeviceInDB]:

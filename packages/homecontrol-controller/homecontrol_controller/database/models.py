@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from sqlalchemy import BigInteger, Integer
+from sqlalchemy import JSON, BigInteger, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.types import String, Uuid
 
@@ -35,3 +35,15 @@ class HueBridgeDeviceInDB(Base):
     identifier: Mapped[str] = mapped_column(String)
     username: Mapped[str] = mapped_column(String)
     client_key: Mapped[str] = mapped_column(String)
+
+
+class RoomInDB(Base):
+    """Room in the datbase."""
+
+    __tablename__ = "rooms"
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True)
+    # Could use JSONB here when using just PostgreSQL, but for compatibility
+    # use plain JSON for now
+    controllers: Mapped[JSON] = mapped_column(JSON)

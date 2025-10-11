@@ -3,7 +3,9 @@ from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import RecordNotFoundError
-from sqlalchemy import delete, select
+from sqlalchemy import delete
+from sqlalchemy import exc as sqlalchemy_exc
+from sqlalchemy import select
 
 from homecontrol_auth.database.models import UserSessionInDB
 
@@ -35,7 +37,7 @@ class UserSessionsSession(DatabaseSession):
             return (
                 await self._session.execute(select(UserSessionInDB).where(UserSessionInDB.id == UUID(session_id)))
             ).scalar_one()
-        except (exc.NoResultFound, ValueError) as exc:
+        except (sqlalchemy_exc.NoResultFound, ValueError) as exc:
             raise RecordNotFoundError(f"No user session found with the ID '{session_id}'") from exc
 
     async def update(self, user_session: UserSessionInDB) -> UserSessionInDB:

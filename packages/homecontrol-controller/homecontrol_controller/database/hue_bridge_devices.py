@@ -2,7 +2,9 @@ from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import RecordNotFoundError
-from sqlalchemy import delete, select
+from sqlalchemy import delete
+from sqlalchemy import exc as sqlalchemy_exc
+from sqlalchemy import select
 
 from homecontrol_controller.database.models import HueBridgeDeviceInDB
 
@@ -11,10 +13,10 @@ class HueBridgeDevicesSession(DatabaseSession):
     """Handles Hue Bridge device's in the database"""
 
     async def create(self, hue_bridge_device: HueBridgeDeviceInDB) -> HueBridgeDeviceInDB:
-        """Creates an Hue Bridge device in the database.
+        """Creates a Hue Bridge device in the database.
 
-        :param hue_bridge_device: Hue Bridg device to create.
-        :returns: Created Hue Bridg device.
+        :param hue_bridge_device: Hue Bridge device to create.
+        :returns: Created Hue Bridge device.
         """
 
         self._session.add(hue_bridge_device)
@@ -23,7 +25,7 @@ class HueBridgeDevicesSession(DatabaseSession):
         return hue_bridge_device
 
     async def get(self, device_id: str) -> HueBridgeDeviceInDB:
-        """Returns an Hue Bridge device from the database given its ID.
+        """Returns a Hue Bridge device from the database given its ID.
 
         :param device_id: ID of the Hue Bridge device to get.
         :returns: The Hue Bridge device.
@@ -36,7 +38,7 @@ class HueBridgeDevicesSession(DatabaseSession):
                     select(HueBridgeDeviceInDB).where(HueBridgeDeviceInDB.id == UUID(device_id))
                 )
             ).scalar_one()
-        except (exc.NoResultFound, ValueError) as exc:
+        except (sqlalchemy_exc.NoResultFound, ValueError) as exc:
             raise RecordNotFoundError(f"No Hue Bridge device found with the ID '{device_id}'") from exc
 
     async def get_all(self) -> list[HueBridgeDeviceInDB]:
