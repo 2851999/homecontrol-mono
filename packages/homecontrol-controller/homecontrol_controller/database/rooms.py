@@ -21,14 +21,14 @@ class RoomsSession(DatabaseSession):
 
         self._session.add(room)
         await self._session.commit()
-        await self._session.refresh()
+        await self._session.refresh(room)
         return room
 
     async def get(self, room_id: str) -> RoomInDB:
         """Returns a Room from the database given its ID.
 
         :param room_id: ID of the room to get.
-        :returns: The room.
+        :return: The room.
         :raises RecordNotFoundError: If the room with the given ID is not found in the database.
         """
 
@@ -40,7 +40,7 @@ class RoomsSession(DatabaseSession):
     async def get_all(self) -> list[RoomInDB]:
         """Returns a list of all the Rooms from the databse.
 
-        :returns: List of rooms.
+        :return: List of rooms.
         """
 
         return (await self._session.execute(select(RoomInDB))).scalars().all()
@@ -49,7 +49,7 @@ class RoomsSession(DatabaseSession):
         """Updates a room by commiting any changes to the database.
 
         :param room: Room to update.
-        :returns: The room.
+        :return: The room.
         """
 
         # TODO: Check if this enough, before had to use mutable_json_type(dbtype=JSON, nested=True) for the json data to update

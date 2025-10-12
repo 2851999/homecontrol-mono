@@ -8,7 +8,7 @@ from homecontrol_controller.database.rooms import RoomsSession
 
 
 class ControllerDatabaseSession(DatabaseSession):
-    """Handles a controllelr database session."""
+    """Handles a controller database session."""
 
     _ac_devices: Optional[ACDevicesSession] = None
     _hue_bridge_devices: Optional[HueBridgeDevicesSession] = None

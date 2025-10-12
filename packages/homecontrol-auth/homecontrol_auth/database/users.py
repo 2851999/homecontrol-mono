@@ -16,7 +16,7 @@ class UsersSession(DatabaseSession):
         """Creates a user in the database
 
         :param user: User to create
-        :returns: Created user
+        :return: Created user
         :raises DuplicateRecordError: If a user with the same username already exists
         """
 
@@ -33,7 +33,7 @@ class UsersSession(DatabaseSession):
         """Returns a user from the database given its ID
 
         :param user_id: ID of the user to get
-        :returns: The user
+        :return: The user
         :raises RecordNotFoundError: If the user with the given ID is not found in the database
         """
 
@@ -46,7 +46,7 @@ class UsersSession(DatabaseSession):
         """Returns a user from the database given their username
 
         :param username: Username of the user to get
-        :returns: The User
+        :return: The User
         :raises RecordNotFoundError: If a user with the given username is not found in the database
         """
 
@@ -58,7 +58,7 @@ class UsersSession(DatabaseSession):
     async def count(self) -> int:
         """Counts the number of users
 
-        :returns: Number of users
+        :return: Number of users
         """
 
         return (await self._session.execute(select(func.count()).select_from(UserInDB))).scalar_one()
@@ -66,7 +66,7 @@ class UsersSession(DatabaseSession):
     async def get_all(self) -> list[UserInDB]:
         """Returns a list of users
 
-        :returns: List of users
+        :return: List of users
         """
 
         return (await self._session.execute(select(UserInDB))).scalars().all()
@@ -75,7 +75,7 @@ class UsersSession(DatabaseSession):
         """Updates a user by commiting any changes to the database
 
         :param user: User to update
-        :returns: The user
+        :return: The user
         """
 
         await self._session.commit()

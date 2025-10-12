@@ -79,7 +79,7 @@ class ACDevice:
     async def get_state(self) -> ACDeviceState:
         """Obtains the AC device's current state.
 
-        :returns: The current state of the AC device.
+        :return: The current state of the AC device.
         """
 
         await self._refresh_state()
@@ -95,7 +95,7 @@ class ACDevice:
         """Applies a specific change of state to the AC device.
 
         :param state_patch: Change of state to apply to the device.
-        :returns: The current state of the AC device.
+        :return: The current state of the AC device.
         :raises ACInvalidStateError: If the requested state is invalid.
         """
 

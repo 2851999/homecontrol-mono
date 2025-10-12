@@ -17,7 +17,7 @@ class UserSessionsSession(DatabaseSession):
         """Creates a user session in the database
 
         :param user_session: User session to create
-        :returns: Created user session
+        :return: Created user session
         """
 
         self._session.add(user_session)
@@ -29,7 +29,7 @@ class UserSessionsSession(DatabaseSession):
         """Returns a user session from the database given its ID
 
         :param session_id: ID of the user session to get
-        :returns: The user session
+        :return: The user session
         :raises RecordNotFoundError: If the user session with the given ID is not found in the database
         """
 
@@ -44,7 +44,7 @@ class UserSessionsSession(DatabaseSession):
         """Updates a user session by commiting any changes to the database
 
         :param user_session: User session to update
-        :returns: The user session
+        :return: The user session
         """
 
         await self._session.commit()
@@ -72,7 +72,7 @@ class UserSessionsSession(DatabaseSession):
         """Deletes all user sessions from the database that have expired before the given time
 
         :param datetime_value: Date and time before which sessions that have expired should be deleted
-        :returns: Number of rows deleted
+        :return: Number of rows deleted
         """
         return (
             await self._session.execute(delete(UserSessionInDB).where(UserSessionInDB.expiry_time < datetime_value))

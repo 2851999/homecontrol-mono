@@ -32,7 +32,7 @@ class ACService:
         """Creates an AC device.
 
         :param ac_device: AC device to create.
-        :returns: Created AC device.
+        :return: Created AC device.
         """
 
         found_device = await ACDiscovery.authenticate(
@@ -46,7 +46,7 @@ class ACService:
     async def get_all(self) -> list[ACDevice]:
         """Returns a list of AC devices.
 
-        :returns: List of AC devices.
+        :return: List of AC devices.
         """
 
         return TypeAdapter(list[ACDevice]).validate_python(await self._session.get_all())

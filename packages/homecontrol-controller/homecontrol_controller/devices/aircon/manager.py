@@ -15,7 +15,7 @@ class ACManager:
         """Adds an AC device to this manager after first initialising it.
 
         :param ac_device: Database model of the device to add.
-        :returns: The initialised AC device.
+        :return: The initialised AC device.
         """
 
         device = ACDevice(ac_device)

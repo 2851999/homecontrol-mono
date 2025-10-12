@@ -15,7 +15,7 @@ class HueBridgeManager:
         """Adds a Hue Bridge device to this manager.
 
         :param hue_bridge_device: Database model of the device to add.
-        :returns: The Hue Bridge device.
+        :return: The Hue Bridge device.
         """
         device = HueBridge(hue_bridge_device)
         self._devices[str(hue_bridge_device.id)] = device

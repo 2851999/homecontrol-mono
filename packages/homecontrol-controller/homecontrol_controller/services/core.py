@@ -8,6 +8,7 @@ from homecontrol_controller.database.core import ControllerDatabaseSession
 from homecontrol_controller.devices.aircon.manager import ACManager
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
 from homecontrol_controller.services.devices.core import DeviceService
+from homecontrol_controller.services.rooms import RoomService
 
 
 class ControllerService:
@@ -18,6 +19,7 @@ class ControllerService:
     _hue_bridge_manager: HueBridgeManager
 
     _devices: Optional[DeviceService] = None
+    _rooms: Optional[RoomService] = None
 
     def __init__(self, session: ControllerDatabaseSession, ac_manager: ACManager, hue_bridge_manager: HueBridgeManager):
         self._session = session
@@ -29,6 +31,12 @@ class ControllerService:
         if not self._devices:
             self._devices = DeviceService(self._session, self._ac_manager, self._hue_bridge_manager)
         return self._devices
+
+    @property
+    def rooms(self) -> RoomService:
+        if not self._rooms:
+            self._rooms = RoomService(self._session.rooms)
+        return self._rooms
 
 
 @asynccontextmanager

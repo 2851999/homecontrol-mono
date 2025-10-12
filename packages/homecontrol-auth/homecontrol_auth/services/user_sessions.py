@@ -25,7 +25,7 @@ class UserSessionsService:
         """Generates and returns an access token
 
         :param session_id: ID of the session the access token should be generated for
-        :returns: The generated access token
+        :return: The generated access token
         """
 
         return generate_jwt(
@@ -37,7 +37,7 @@ class UserSessionsService:
 
         :param user: User to create the session for
         :param long_lived: Whether the session should be long lived or not
-        :returns: The created internal user session
+        :return: The created internal user session
         """
 
         session_id = uuid4()
@@ -69,7 +69,7 @@ class UserSessionsService:
 
         :param user: User to create the session for
         :param long_lived: Whether the session should be long lived or not
-        :returns: The created internal user session
+        :return: The created internal user session
         """
 
         current_time = datetime.now(timezone.utc)
@@ -127,7 +127,7 @@ class UserSessionsService:
 
         :param login: Login information
         :param response: FastAPI response object to set the cookies on
-        :returns: Created user session
+        :return: Created user session
         :raises AuthenticationError: If a user with the given username is not found, the password is incorrect or if the user itself is disabled
         """
 
@@ -160,7 +160,7 @@ class UserSessionsService:
         """Verify a user session given its access token
 
         :param access_token: Access token from the session to verify
-        :returns: The user sesssion
+        :return: The user sesssion
         :raises AuthenticationError: If the token is invalid
         """
 
@@ -181,7 +181,7 @@ class UserSessionsService:
 
         :param refresh_token: Refresh token from the session to refresh
         :param response: FastAPI response object to set the cookies on
-        :returns: The user session
+        :return: The user session
         :raises AuthenticationError: If the refresh token has already been used to refresh the session before and is now invalid
         """
 

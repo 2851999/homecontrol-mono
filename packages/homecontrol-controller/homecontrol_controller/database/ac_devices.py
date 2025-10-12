@@ -16,7 +16,7 @@ class ACDevicesSession(DatabaseSession):
         """Creates an AC device in the database.
 
         :param ac_device: AC device to create.
-        :returns: Created AC device.
+        :return: Created AC device.
         """
 
         self._session.add(ac_device)
@@ -28,7 +28,7 @@ class ACDevicesSession(DatabaseSession):
         """Returns an AC device from the database given its ID.
 
         :param device_id: ID of the AC device to get.
-        :returns: The AC device.
+        :return: The AC device.
         :raises RecordNotFoundError: If the AC device with the given ID is not found in the database.
         """
 
@@ -42,7 +42,7 @@ class ACDevicesSession(DatabaseSession):
     async def get_all(self) -> list[ACDeviceInDB]:
         """Returns a list of all AC devices from the database.
 
-        :returns: List of AC devices.
+        :return: List of AC devices.
         """
 
         return (await self._session.execute(select(ACDeviceInDB))).scalars().all()
@@ -51,7 +51,7 @@ class ACDevicesSession(DatabaseSession):
         """Updates an AC device by commiting any changes to the database.
 
         :param ac_device: AC device to update.
-        :returns: The AC device.
+        :return: The AC device.
         """
 
         await self._session.commit()

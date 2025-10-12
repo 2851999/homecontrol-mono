@@ -73,7 +73,7 @@ class HueRoomService:
     async def get_all(self) -> list[HueRoom]:
         """Returns a list of all rooms managed by the Hue Bridge.
 
-        :returns: List of all rooms.
+        :return: List of all rooms.
         """
 
         rooms = await self._session.get_rooms()

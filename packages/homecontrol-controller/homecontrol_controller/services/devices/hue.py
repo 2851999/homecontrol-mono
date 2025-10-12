@@ -27,7 +27,7 @@ class HueService:
         """Creates a Hue Bridge device.
 
         :param hue_bridge_device: Hue Bridge device to create.
-        :returns: Created Hue Bridge device.
+        :return: Created Hue Bridge device.
         """
 
         authenticated_device = await HueBridgeDiscovery.authenticate(
@@ -39,7 +39,7 @@ class HueService:
     async def get_all_bridges(self) -> list[HueBridgeDevice]:
         """Returns a list of Hue Bridge devices.
 
-        :returns: List of Hue Bridge devices.
+        :return: List of Hue Bridge devices.
         """
 
         return TypeAdapter(list[HueBridgeDevice]).validate_python(await self._session.get_all())
@@ -48,7 +48,7 @@ class HueService:
         """Returns a Hue Bridge device.
 
         :param bridge_id: ID of the Hue Bridge to obtain.
-        :returns: The Hue Bridge device.
+        :return: The Hue Bridge device.
         """
 
         return self._bridge_manager.get(bridge_id)

@@ -15,7 +15,7 @@ class ACDiscovery:
         """Attempts to discover all air conditioning devices that are available on the current network.
 
         :param settings: Midea settings for authentication.
-        :returns: Database model of the discovered device.
+        :return: Database model of the discovered device.
         :raises DeviceConnectionError: If an error occurs when trying to connect to the device.
         """
 
@@ -50,7 +50,7 @@ class ACDiscovery:
         :param name: Name to give the device.
         :param discovery_info: Device discovery info.
         :param settings: Midea settings for authentication.
-        :returns: Database model of the discovered device.
+        :return: Database model of the discovered device.
         :raises DeviceConnectionError: If an error occurs when trying to connect to the device.
         :raises DeviceNotFoundError: If the device is not found.
         """

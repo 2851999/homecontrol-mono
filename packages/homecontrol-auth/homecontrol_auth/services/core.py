@@ -39,7 +39,7 @@ class AuthService:
         """Verifies a session given an access token
 
         :param access_token: Access token to authenticate
-        :returns: The user
+        :return: The user
         """
 
         return await self.user_sessions.verify(access_token)
@@ -48,7 +48,7 @@ class AuthService:
         """Verifies a user given an access token
 
         :param access_token: Access token to authenticate
-        :returns: The user
+        :return: The user
         """
         user_session = await self.verify_session(access_token)
         user = await self.users.get(user_session.user_id)

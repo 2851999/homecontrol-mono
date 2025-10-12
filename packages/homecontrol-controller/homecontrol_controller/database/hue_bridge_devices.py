@@ -16,7 +16,7 @@ class HueBridgeDevicesSession(DatabaseSession):
         """Creates a Hue Bridge device in the database.
 
         :param hue_bridge_device: Hue Bridge device to create.
-        :returns: Created Hue Bridge device.
+        :return: Created Hue Bridge device.
         """
 
         self._session.add(hue_bridge_device)
@@ -28,7 +28,7 @@ class HueBridgeDevicesSession(DatabaseSession):
         """Returns a Hue Bridge device from the database given its ID.
 
         :param device_id: ID of the Hue Bridge device to get.
-        :returns: The Hue Bridge device.
+        :return: The Hue Bridge device.
         :raises RecordNotFoundError: If the Hue Bridge device with the given ID is not found in the database.
         """
 
@@ -44,7 +44,7 @@ class HueBridgeDevicesSession(DatabaseSession):
     async def get_all(self) -> list[HueBridgeDeviceInDB]:
         """Returns a list of all Hue Bridge devices from the database.
 
-        :returns: List of Hue Bridge devices.
+        :return: List of Hue Bridge devices.
         """
 
         return (await self._session.execute(select(HueBridgeDeviceInDB))).scalars().all()
@@ -53,7 +53,7 @@ class HueBridgeDevicesSession(DatabaseSession):
         """Updates a Hue Bridge device by commiting any changes to the database.
 
         :param hue_bridge_device: Hue Bridge device to update.
-        :returns: The Hue Bridge device.
+        :return: The Hue Bridge device.
         """
 
         await self._session.commit()
