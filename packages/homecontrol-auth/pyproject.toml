@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homecontrol-auth"
-version = "0.0.1"
+version = "0.1.0"
 authors = [{ name = "2851999", email = "2851999@users.noreply.github.com" }]
 description = "A REST API providing authentication for HomeControl."
 readme = "README.md"
@@ -15,14 +15,18 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "bcrypt>=5.0.0",
     "homecontrol-base-api",
-    # "homecontrol-base-api@git+https://github.com/2851999/homecontrol-mono#egg=main&subdirectory=packages/homecontrol-base-api",
-    "bcrypt",
-    "pyjwt",
+    "pyjwt>=2.10.1",
 ]
 
 [project.optional-dependencies]
-dev = ["black"]
+dev = [
+    "black>=25.11.0",
+]
+
+[tool.uv.sources]
+homecontrol-base-api = { path = "../homecontrol-base-api" }
 
 [tool.setuptools]
 packages = ["homecontrol_auth"]

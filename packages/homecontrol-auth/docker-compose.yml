@@ -13,13 +13,18 @@ services:
   homecontrol-auth:
     # depends_on:
     #   - database
-    build: .
+    build:
+      context: ..
+      dockerfile: homecontrol-auth/Dockerfile
     working_dir: /homecontrol-auth
+    # See https://docs.astral.sh/uv/guides/integration/docker/#configuring-watch-with-docker-compose
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /homecontrol-auth/homecontrol_auth
     volumes:
-      - ../homecontrol-base-api/homecontrol_base_api:/usr/local/lib/python3.12/site-packages/homecontrol_base_api:ro
-      - ./:/homecontrol-auth
-    environment:
-      - DATABASE__DRIVER=sqlite+aiosqlite
-      - DATABASE__NAME=database.db
+      - ./database.db:/homecontrol-auth/database.db
+    env_file: ".env"
     ports:
       - "8000:8000"

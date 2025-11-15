@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "homecontrol-base-api"
-version = "0.0.1"
+version = "0.1.0"
 authors = [{ name = "2851999", email = "2851999@users.noreply.github.com" }]
 description = "A base library for homecontrol API's."
 readme = "README.md"
@@ -15,17 +15,18 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "fastapi[standard]",
-    "SQLAlchemy[asyncio]",
-    "pydantic-settings",
-    "alembic",
+    "aiosqlite>=0.21.0",
+    "alembic>=1.17.2",
+    "fastapi[standard]>=0.121.2",
+    "pydantic-settings>=2.12.0",
     # TODO: Only needed for sqlite
-    "aiosqlite",
+    "sqlalchemy[asyncio]>=2.0.44",
 ]
 
 [project.optional-dependencies]
-dev = ["black"]
-
+dev = [
+    "black>=25.11.0",
+]
 
 [tool.setuptools]
 packages = ["homecontrol_base_api"]

@@ -8,8 +8,8 @@ from homecontrol_auth.database.core import AuthDatabaseSession
 from homecontrol_auth.exceptions import AuthenticationError
 from homecontrol_auth.schemas.user_sessions import UserSession
 from homecontrol_auth.schemas.users import User
-from homecontrol_auth.service.user_sessions import UserSessionsService
-from homecontrol_auth.service.users import UsersService
+from homecontrol_auth.services.user_sessions import UserSessionsService
+from homecontrol_auth.services.users import UsersService
 
 
 class AuthService:
