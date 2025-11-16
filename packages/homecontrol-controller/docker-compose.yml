@@ -27,7 +27,7 @@ services:
       - ./database.db:/homecontrol-controller/database.db
     env_file: ".env"
     ports:
-      - "8000:8000"
+      - "8001:8000"
     # extra_hosts:
     #   - "host.docker.internal:host-gateway"
     # network_mode: "host"

@@ -1,0 +1,10 @@
+services:
+  homecontrol-auth:
+    extends:
+      file: packages/homecontrol-auth/docker-compose.yml
+      service: homecontrol-auth
+
+  homecontrol-controller:
+    extends:
+      file: packages/homecontrol-controller/docker-compose.yml
+      service: homecontrol-controller
