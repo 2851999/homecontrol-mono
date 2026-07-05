@@ -5,7 +5,11 @@ from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesS
 from homecontrol_controller.devices.hue.bridge import HueBridge
 from homecontrol_controller.devices.hue.discovery import HueBridgeDiscovery
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
-from homecontrol_controller.schemas.hue import HueBridgeDevice, HueBridgeDeviceDiscoveryInfo, HueBridgeDevicePost
+from homecontrol_controller.schemas.hue import (
+    HueBridgeDevice,
+    HueBridgeDeviceDiscoveryInfo,
+    HueBridgeDevicePost,
+)
 
 
 class HueService:
@@ -31,7 +35,9 @@ class HueService:
         """
 
         authenticated_device = await HueBridgeDiscovery.authenticate(
-            name=hue_bridge_device.name, discovery_info=hue_bridge_device.discovery_info, settings=settings.hue
+            name=hue_bridge_device.name,
+            discovery_info=hue_bridge_device.discovery_info,
+            settings=settings.hue,
         )
         hue_bridge_device_out = await self._session.create(authenticated_device)
         return HueBridgeDevice.model_validate(hue_bridge_device_out)

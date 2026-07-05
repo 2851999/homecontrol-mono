@@ -1,7 +1,7 @@
 # Use standard python image and copy uv over as uv image cant run entrypoint script
 # gives 'exec /homecontrol-controller/docker-entrypoint.sh: no such file or directory'
 FROM python:3.12
-COPY --from=ghcr.io/astral-sh/uv:0.9.9 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.26 /uv /uvx /bin/
 
 WORKDIR /homecontrol-controller
 
@@ -9,6 +9,7 @@ COPY homecontrol-base-api /homecontrol-base-api
 COPY homecontrol-controller/homecontrol_controller ./homecontrol_controller
 COPY homecontrol-controller/.python-version ./.python-version
 COPY homecontrol-controller/pyproject.toml ./pyproject.toml
+COPY homecontrol-controller/README.md ./README.md
 COPY homecontrol-controller/uv.lock ./uv.lock
 
 RUN uv sync --locked

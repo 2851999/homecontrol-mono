@@ -21,7 +21,12 @@ class ControllerService:
     _devices: Optional[DeviceService] = None
     _rooms: Optional[RoomService] = None
 
-    def __init__(self, session: ControllerDatabaseSession, ac_manager: ACManager, hue_bridge_manager: HueBridgeManager):
+    def __init__(
+        self,
+        session: ControllerDatabaseSession,
+        ac_manager: ACManager,
+        hue_bridge_manager: HueBridgeManager,
+    ):
         self._session = session
         self._ac_manager = ac_manager
         self._hue_bridge_manager = hue_bridge_manager

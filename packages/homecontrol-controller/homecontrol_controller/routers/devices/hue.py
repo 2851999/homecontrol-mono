@@ -14,7 +14,9 @@ hue = APIRouter(prefix="/hue", tags=["Hue"])
 
 
 @hue.get("/discover", summary="Discover a list of Hue Bridges")
-async def discover_bridges(controller_service: ControllerServiceDep) -> list[HueBridgeDeviceDiscoveryInfo]:
+async def discover_bridges(
+    controller_service: ControllerServiceDep,
+) -> list[HueBridgeDeviceDiscoveryInfo]:
     return await controller_service.devices.hue.discover_bridges()
 
 
@@ -42,16 +44,25 @@ async def get_room(bridge_id: str, room_id: str, controller_service: ControllerS
         return await session.rooms.get(room_id)
 
 
-@hue.get("/{bridge_id}/rooms/{room_id}/state", summary="Get a room state of a room managed by a Hue Bridge")
+@hue.get(
+    "/{bridge_id}/rooms/{room_id}/state",
+    summary="Get a room state of a room managed by a Hue Bridge",
+)
 async def get_room_state(bridge_id: str, room_id: str, controller_service: ControllerServiceDep) -> HueRoomState:
     bridge = await controller_service.devices.hue.get_bridge_device(bridge_id)
     async with bridge.connect() as session:
         return await session.rooms.get_state(room_id)
 
 
-@hue.patch("/{bridge_id}/rooms/{room_id}/state", summary="Change the state of a room managed by a Hue Bridge")
+@hue.patch(
+    "/{bridge_id}/rooms/{room_id}/state",
+    summary="Change the state of a room managed by a Hue Bridge",
+)
 async def patch_room_state(
-    bridge_id: str, room_id: str, state_patch: HueRoomStatePatch, controller_service: ControllerServiceDep
+    bridge_id: str,
+    room_id: str,
+    state_patch: HueRoomStatePatch,
+    controller_service: ControllerServiceDep,
 ) -> HueRoomState:
     bridge = await controller_service.devices.hue.get_bridge_device(bridge_id)
     async with bridge.connect() as session:

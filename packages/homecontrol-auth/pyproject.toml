@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "homecontrol-auth"
 version = "0.1.0"
@@ -14,19 +10,20 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = [
-    "bcrypt>=5.0.0",
-    "homecontrol-base-api",
-    "pyjwt>=2.10.1",
-]
+dependencies = ["bcrypt>=5.0.0", "homecontrol-base-api", "pyjwt>=2.10.1"]
 
-[project.optional-dependencies]
-dev = [
-    "black>=25.11.0",
-]
+[dependency-groups]
+dev = ["ruff>=0.15.18"]
+
+[tool.uv]
+exclude-newer = "7 days"
 
 [tool.uv.sources]
 homecontrol-base-api = { path = "../homecontrol-base-api" }
 
-[tool.setuptools]
-packages = ["homecontrol_auth"]
+[build-system]
+requires = ["uv_build>=0.11.23,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "."

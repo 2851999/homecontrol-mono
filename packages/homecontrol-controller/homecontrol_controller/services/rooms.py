@@ -20,7 +20,10 @@ class RoomService:
         :return: Created Room.
         """
 
-        room_in = RoomInDB(name=room.name, controllers=[controller.model_dump() for controller in room.controllers])
+        room_in = RoomInDB(
+            name=room.name,
+            controllers=[controller.model_dump() for controller in room.controllers],
+        )
         room_out = await self._session.create(room_in)
         return Room.model_validate(room_out)
 

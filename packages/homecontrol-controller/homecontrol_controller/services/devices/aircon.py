@@ -36,7 +36,9 @@ class ACService:
         """
 
         found_device = await ACDiscovery.authenticate(
-            name=ac_device.name, discovery_info=ac_device.discovery_info, settings=settings.midea
+            name=ac_device.name,
+            discovery_info=ac_device.discovery_info,
+            settings=settings.midea,
         )
         ac_device_out = await self._session.create(found_device)
         await self._manager.add(ac_device=ac_device_out)

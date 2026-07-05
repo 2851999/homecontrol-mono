@@ -4,13 +4,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class MideaSettings(BaseModel):
-
     username: str
     password: SecretStr
 
 
 class HueSettings(BaseModel):
-
     use_mDNS_discovery: bool
 
 

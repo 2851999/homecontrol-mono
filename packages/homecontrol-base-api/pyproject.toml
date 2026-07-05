@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "homecontrol-base-api"
 version = "0.1.0"
@@ -23,10 +19,15 @@ dependencies = [
     "sqlalchemy[asyncio]>=2.0.44",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "black>=25.11.0",
-]
+[dependency-groups]
+dev = ["ruff>=0.15.18"]
 
-[tool.setuptools]
-packages = ["homecontrol_base_api"]
+[tool.uv]
+exclude-newer = "7 days"
+
+[build-system]
+requires = ["uv_build>=0.11.23,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "."

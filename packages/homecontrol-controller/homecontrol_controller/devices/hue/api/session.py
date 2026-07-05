@@ -45,7 +45,10 @@ class HueBridgeAPISession:
         try:
             response = await self._client.post(
                 "/api",
-                json={"devicetype": "homecontrol#controller", "generateclientkey": True},
+                json={
+                    "devicetype": "homecontrol#controller",
+                    "generateclientkey": True,
+                },
                 extensions={"sni_hostname": self._bridge_identifier},
             )
             response.raise_for_status()

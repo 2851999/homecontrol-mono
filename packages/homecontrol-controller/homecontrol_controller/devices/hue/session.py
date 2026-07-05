@@ -62,7 +62,10 @@ async def create_hue_bridge_session(
         base_url=f"https://{connection_info.ip_address}:{connection_info.port}",
         verify=ssl_ctx,
         headers=(
-            {"hue-application-key": connection_info.username, "Host": f"{connection_info.identifier}.local"}
+            {
+                "hue-application-key": connection_info.username,
+                "Host": f"{connection_info.identifier}.local",
+            }
             if authenticated
             else None
         ),

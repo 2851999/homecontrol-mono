@@ -9,7 +9,11 @@ from homecontrol_controller.config import settings
 from homecontrol_controller.database.core import ControllerDatabaseSession
 from homecontrol_controller.devices.aircon.discovery import ACDiscovery
 from homecontrol_controller.devices.aircon.manager import ACManager
-from homecontrol_controller.devices.hue.api.schemas import GroupedLightPut, LightPut, ScenePut
+from homecontrol_controller.devices.hue.api.schemas import (
+    GroupedLightPut,
+    LightPut,
+    ScenePut,
+)
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
 from homecontrol_controller.routers.devices.core import devices
 

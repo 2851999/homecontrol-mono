@@ -13,7 +13,9 @@ aircon = APIRouter(prefix="/aircon", tags=["Air Conditioning"])
 
 
 @aircon.get("/discover", summary="Discover a list of AC units")
-async def discover_units(controller_service: ControllerServiceDep) -> list[ACDeviceDiscoveryInfo]:
+async def discover_units(
+    controller_service: ControllerServiceDep,
+) -> list[ACDeviceDiscoveryInfo]:
     return await controller_service.devices.aircon.discover_units()
 
 
@@ -34,6 +36,8 @@ async def get_state(device_id: str, controller_service: ControllerServiceDep) ->
 
 @aircon.patch("/{device_id}/state", summary="Change the current state of an AC device")
 async def patch_state(
-    device_id: str, state_patch: ACDeviceStatePatch, controller_service: ControllerServiceDep
+    device_id: str,
+    state_patch: ACDeviceStatePatch,
+    controller_service: ControllerServiceDep,
 ) -> ACDeviceState:
     return await controller_service.devices.aircon.update_state(device_id, state_patch)

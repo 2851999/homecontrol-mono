@@ -67,7 +67,11 @@ class HueRoomService:
                 scenes.append(HueScene(id=hue_scene.id, name=hue_scene.metadata.name))
 
         return HueRoom(
-            id=room.id, name=room.metadata.name, grouped_light_id=grouped_light_id, lights=lights, scenes=scenes
+            id=room.id,
+            name=room.metadata.name,
+            grouped_light_id=grouped_light_id,
+            lights=lights,
+            scenes=scenes,
         )
 
     async def get_all(self) -> list[HueRoom]:
@@ -129,7 +133,11 @@ class HueRoomService:
         for hue_scene in hue_scenes:
             if hue_scene.group.rid == room.id:
                 scene_states.append(
-                    HueSceneState(id=hue_scene.id, name=hue_scene.metadata.name, status=hue_scene.status.active)
+                    HueSceneState(
+                        id=hue_scene.id,
+                        name=hue_scene.metadata.name,
+                        status=hue_scene.status.active,
+                    )
                 )
 
         return HueRoomState(

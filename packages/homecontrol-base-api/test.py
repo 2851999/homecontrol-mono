@@ -9,7 +9,6 @@ from sqlalchemy import Column, Uuid
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-from homecontrol_base_api.config.core import load_config
 from homecontrol_base_api.database.core import DatabaseSession, get_database
 
 # @dataclass

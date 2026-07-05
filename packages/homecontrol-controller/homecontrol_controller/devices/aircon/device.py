@@ -6,7 +6,11 @@ from msmart.device.AC.device import AirConditioner
 from msmart.lan import AuthenticationError
 
 from homecontrol_controller.database.models import ACDeviceInDB
-from homecontrol_controller.exceptions import DeviceAuthenticationError, DeviceConnectionError, DeviceInvalidStateError
+from homecontrol_controller.exceptions import (
+    DeviceAuthenticationError,
+    DeviceConnectionError,
+    DeviceInvalidStateError,
+)
 from homecontrol_controller.schemas.aircon import ACDeviceState, ACDeviceStatePatch
 
 
@@ -101,7 +105,12 @@ class ACDevice:
 
         # Obtaint the current state to patch
         current_state = await self.get_state()
-        updated_state = ACDeviceState(**{**current_state.model_dump(), **state_patch.model_dump(exclude_unset=True)})
+        updated_state = ACDeviceState(
+            **{
+                **current_state.model_dump(),
+                **state_patch.model_dump(exclude_unset=True),
+            }
+        )
 
         # Check the new state is valid
         if state_patch.target_temperature is not None and not 16 <= updated_state.target_temperature <= 30:

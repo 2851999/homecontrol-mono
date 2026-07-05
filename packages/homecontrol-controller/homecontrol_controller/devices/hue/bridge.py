@@ -2,7 +2,10 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from homecontrol_controller.database.models import HueBridgeDeviceInDB
-from homecontrol_controller.devices.hue.session import HueBridgeSession, create_hue_bridge_session
+from homecontrol_controller.devices.hue.session import (
+    HueBridgeSession,
+    create_hue_bridge_session,
+)
 
 
 class HueBridge:

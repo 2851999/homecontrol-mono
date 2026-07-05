@@ -3,7 +3,11 @@ from pydantic import TypeAdapter
 
 from homecontrol_controller.config import MideaSettings
 from homecontrol_controller.database.models import ACDeviceInDB
-from homecontrol_controller.exceptions import DeviceConnectionError, DeviceDiscoveryError, DeviceNotFoundError
+from homecontrol_controller.exceptions import (
+    DeviceConnectionError,
+    DeviceDiscoveryError,
+    DeviceNotFoundError,
+)
 from homecontrol_controller.schemas.aircon import ACDeviceDiscoveryInfo
 
 
@@ -61,7 +65,9 @@ class ACDiscovery:
         while found_device is None and attempts < 3:
             try:
                 found_device = await Discover.discover_single(
-                    discovery_info.ip_address, account=settings.username, password=settings.password.get_secret_value()
+                    discovery_info.ip_address,
+                    account=settings.username,
+                    password=settings.password.get_secret_value(),
                 )
             except Exception as exc:
                 raise DeviceConnectionError(

@@ -17,7 +17,6 @@ class HueBridgeAPIPostResponseError(BaseModel):
 
 
 class HueBridgeAPIPostResponse(BaseModel):
-
     success: Optional[HueBridgeAPIPostResponseSuccess] = None
     error: Optional[HueBridgeAPIPostResponseError] = None
 
