@@ -13,7 +13,9 @@ logger = logging.getLogger()
 PACKAGES_DIRECTORY = Path("./packages")
 
 
-def run_shell_command(args: list[str], cwd: str = None, capture_output: bool = False):
+def run_shell_command(
+    args: list[str], cwd: str | None = None, capture_output: bool = False
+):
     """Run a shell command"""
 
     logger.debug("Running command '%s'", " ".join([str(arg) for arg in args]))

@@ -1,5 +1,4 @@
 import asyncio
-from numbers import Real
 from typing import Optional
 
 from homecontrol_controller.devices.hue.api.schemas import (

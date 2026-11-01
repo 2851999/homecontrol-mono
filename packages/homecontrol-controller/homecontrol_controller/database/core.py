@@ -10,9 +10,9 @@ from homecontrol_controller.database.rooms import RoomsSession
 class ControllerDatabaseSession(DatabaseSession):
     """Handles a controller database session."""
 
-    _ac_devices: Optional[ACDevicesSession] = None
-    _hue_bridge_devices: Optional[HueBridgeDevicesSession] = None
-    _rooms: Optional[RoomsSession] = None
+    _ac_devices: ACDevicesSession | None = None
+    _hue_bridge_devices: HueBridgeDevicesSession | None = None
+    _rooms: RoomsSession | None = None
 
     @property
     def ac_devices(self) -> ACDevicesSession:

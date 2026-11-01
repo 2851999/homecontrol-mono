@@ -1,5 +1,4 @@
 from enum import StrEnum
-from typing import Optional
 
 from homecontrol_base_api.types import StringUUID
 from pydantic import BaseModel, ConfigDict
@@ -45,7 +44,7 @@ class HueRoom(BaseModel):
 
     id: str
     name: str
-    grouped_light_id: Optional[str]
+    grouped_light_id: str | None
     lights: list[HueLight]
     scenes: list[HueScene]
 
@@ -67,9 +66,9 @@ class HueLightState(BaseModel):
     on: bool
 
     # The following will be None for a Hue smart plug
-    brightness: Optional[float] = None
-    colour_temperature: Optional[int] = None
-    colour: Optional[HueColour] = None
+    brightness: float | None = None
+    colour_temperature: int | None = None
+    colour: HueColour | None = None
 
 
 class HueSceneStatus(StrEnum):
@@ -95,26 +94,26 @@ class HueRoomState(BaseModel):
 class HueGroupedLightStatePatch(BaseModel):
     """Schema for a patch request on a grouped light within a room managed by a Hue Bridge."""
 
-    on: Optional[bool] = None
-    brightness: Optional[float] = None
+    on: bool | None = None
+    brightness: float | None = None
 
 
 class HueLightStatePatch(BaseModel):
     """Schema for a patch request on a light within a room managed by a Hue Bridge."""
 
-    on: Optional[bool] = None
+    on: bool | None = None
 
     # The following will not work for a Hue smart plug
-    brightness: Optional[float] = None
-    colour_temperature: Optional[int] = None
-    colour: Optional[HueColour] = None
+    brightness: float | None = None
+    colour_temperature: int | None = None
+    colour: HueColour | None = None
 
 
 class HueRoomStatePatch(BaseModel):
     """Schema for a patch request on the state of a room managed by a Hue Bridge."""
 
-    grouped_light: Optional[HueGroupedLightStatePatch] = None
-    lights: Optional[dict[str, HueLightStatePatch]] = None
+    grouped_light: HueGroupedLightStatePatch | None = None
+    lights: dict[str, HueLightStatePatch] | None = None
 
     # When specified will recall a sscene given its ID (after any other updates)
-    scene_id: Optional[str] = None
+    scene_id: str | None = None

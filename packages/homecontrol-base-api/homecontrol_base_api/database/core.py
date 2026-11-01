@@ -1,12 +1,8 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Generic, Type, TypeVar
+from typing import Generic, TypeVar
 
-from sqlalchemy.ext.asyncio import (
-    AsyncConnection,
-    AsyncEngine,
-    AsyncSession,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine, AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from homecontrol_base_api.config.core import DatabaseSettings, get_database_url
@@ -28,14 +24,14 @@ class DatabaseSession:
 TDatabaseSession = TypeVar("TDatabaseConnection", bound=DatabaseSession)
 
 
-class Database(Generic[TDatabaseSession]):
+class Database[TDatabaseSession: DatabaseSession]:
     """Base class for handling connections to a database"""
 
     _engine: AsyncEngine
     _session_maker: sessionmaker
-    _session_type = Type[TDatabaseSession]
+    _session_type = type[TDatabaseSession]
 
-    def __init__(self, session_type: Type[TDatabaseSession], database_settings: DatabaseSettings):
+    def __init__(self, session_type: type[TDatabaseSession], database_settings: DatabaseSettings):
         """Initialise the database engine"""
 
         self._engine = create_async_engine(get_database_url(database_settings))
@@ -69,8 +65,8 @@ class Database(Generic[TDatabaseSession]):
 
 
 @asynccontextmanager
-async def get_database(
-    session_type: Type[TDatabaseSession], settings: DatabaseSettings
+async def get_database[TDatabaseSession: DatabaseSession](
+    session_type: type[TDatabaseSession], settings: DatabaseSettings
 ) -> AsyncGenerator[Database[TDatabaseSession], None]:
     """Obtains a database session.
 

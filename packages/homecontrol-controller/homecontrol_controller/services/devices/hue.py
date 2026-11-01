@@ -5,11 +5,7 @@ from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesS
 from homecontrol_controller.devices.hue.bridge import HueBridge
 from homecontrol_controller.devices.hue.discovery import HueBridgeDiscovery
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
-from homecontrol_controller.schemas.hue import (
-    HueBridgeDevice,
-    HueBridgeDeviceDiscoveryInfo,
-    HueBridgeDevicePost,
-)
+from homecontrol_controller.schemas.hue import HueBridgeDevice, HueBridgeDeviceDiscoveryInfo, HueBridgeDevicePost
 
 
 class HueService:

@@ -1,7 +1,7 @@
 import ssl
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import AsyncGenerator, Optional
 
 from httpx import AsyncClient
 
@@ -16,8 +16,8 @@ class HueBridgeSession:
 
     _client: AsyncClient
     _bridge_identifier: str
-    _api: Optional[HueBridgeAPISession] = None
-    _rooms: Optional[HueRoomService] = None
+    _api: HueBridgeAPISession | None = None
+    _rooms: HueRoomService | None = None
 
     def __init__(self, client: AsyncClient, bridge_identifier: str):
         """Intitialise this session for communicating with a specific Hue Bridge.

@@ -1,5 +1,3 @@
-from typing import Optional
-
 from homecontrol_controller.database.core import ControllerDatabaseSession
 from homecontrol_controller.devices.aircon.manager import ACManager
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
@@ -14,8 +12,8 @@ class DeviceService:
     _ac_manager: ACManager
     _hue_bridge_manager: HueBridgeManager
 
-    _aircon: Optional[ACService] = None
-    _hue: Optional[HueService] = None
+    _aircon: ACService | None = None
+    _hue: HueService | None = None
 
     def __init__(
         self,

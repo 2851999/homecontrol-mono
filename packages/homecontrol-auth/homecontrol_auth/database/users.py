@@ -2,9 +2,8 @@ from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import DuplicateRecordError, RecordNotFoundError
-from sqlalchemy import delete
+from sqlalchemy import delete, func, select
 from sqlalchemy import exc as sqlalchemy_exc
-from sqlalchemy import func, select
 
 from homecontrol_auth.database.models import UserInDB
 

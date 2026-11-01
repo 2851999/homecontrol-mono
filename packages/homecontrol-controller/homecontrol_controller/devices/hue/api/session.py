@@ -1,4 +1,4 @@
-from typing import Type, TypeVar
+from typing import TypeVar
 
 from httpx import AsyncClient
 from pydantic import BaseModel, TypeAdapter
@@ -56,7 +56,7 @@ class HueBridgeAPISession:
         except Exception as exc:
             raise DeviceAuthenticationError("Unable to generate client key for the Hue Bridge") from exc
 
-    async def _get_resource(self, endpoint: str, resource_type: Type[T]) -> list[T]:
+    async def _get_resource(self, endpoint: str, resource_type: type[T]) -> list[T]:
         """Returns parsed data from a get request to an endpoint.
 
         :param endpoint: Endpoint to call.

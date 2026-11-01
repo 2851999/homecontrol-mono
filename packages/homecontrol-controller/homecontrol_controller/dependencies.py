@@ -1,11 +1,9 @@
-from typing import Annotated, AsyncGenerator
+from collections.abc import AsyncGenerator
+from typing import Annotated
 
 from fastapi import Depends, Request
 
-from homecontrol_controller.services.core import (
-    ControllerService,
-    create_controller_service,
-)
+from homecontrol_controller.services.core import ControllerService, create_controller_service
 
 
 async def get_controller_service(

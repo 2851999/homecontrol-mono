@@ -3,11 +3,7 @@ from pydantic import TypeAdapter
 
 from homecontrol_controller.config import MideaSettings
 from homecontrol_controller.database.models import ACDeviceInDB
-from homecontrol_controller.exceptions import (
-    DeviceConnectionError,
-    DeviceDiscoveryError,
-    DeviceNotFoundError,
-)
+from homecontrol_controller.exceptions import DeviceConnectionError, DeviceDiscoveryError, DeviceNotFoundError
 from homecontrol_controller.schemas.aircon import ACDeviceDiscoveryInfo
 
 

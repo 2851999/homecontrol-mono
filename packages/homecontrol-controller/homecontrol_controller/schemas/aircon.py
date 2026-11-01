@@ -3,7 +3,7 @@ from typing import Optional
 
 from homecontrol_base_api.types import StringUUID
 from msmart.device.AC.device import AirConditioner
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 
 class ACDeviceDiscoveryInfo(BaseModel):
@@ -92,16 +92,16 @@ class ACDeviceStatePatch(BaseModel):
     """Schema for an AC device's state patch."""
 
     # Read and write
-    power: Optional[bool] = None
-    target_temperature: Optional[float] = None
-    operational_mode: Optional[ACDeviceMode] = None
-    fan_speed: Optional[ACDeviceFanSpeed] = None
-    swing_mode: Optional[ACDeviceSwingMode] = None
-    eco_mode: Optional[bool] = None
-    turbo_mode: Optional[bool] = None
-    rate: Optional[ACDeviceRate] = None
-    fahrenheit: Optional[bool] = None
-    display_on: Optional[bool] = None
+    power: bool | None = None
+    target_temperature: float | None = None
+    operational_mode: ACDeviceMode | None = None
+    fan_speed: ACDeviceFanSpeed | None = None
+    swing_mode: ACDeviceSwingMode | None = None
+    eco_mode: bool | None = None
+    turbo_mode: bool | None = None
+    rate: ACDeviceRate | None = None
+    fahrenheit: bool | None = None
+    display_on: bool | None = None
 
     # Write only
-    beep: Optional[bool] = None
+    beep: bool | None = None

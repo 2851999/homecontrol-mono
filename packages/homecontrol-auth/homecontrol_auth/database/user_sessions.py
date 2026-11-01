@@ -3,9 +3,8 @@ from uuid import UUID
 
 from homecontrol_base_api.database.core import DatabaseSession
 from homecontrol_base_api.exceptions import RecordNotFoundError
-from sqlalchemy import delete
+from sqlalchemy import delete, select
 from sqlalchemy import exc as sqlalchemy_exc
-from sqlalchemy import select
 
 from homecontrol_auth.database.models import UserSessionInDB
 

@@ -1,4 +1,4 @@
-from typing import Annotated, Literal, Optional, TypeVar
+from typing import Annotated, Literal, TypeVar
 
 from pydantic import BaseModel, BeforeValidator
 
@@ -17,8 +17,8 @@ class HueBridgeAPIPostResponseError(BaseModel):
 
 
 class HueBridgeAPIPostResponse(BaseModel):
-    success: Optional[HueBridgeAPIPostResponseSuccess] = None
-    error: Optional[HueBridgeAPIPostResponseError] = None
+    success: HueBridgeAPIPostResponseSuccess | None = None
+    error: HueBridgeAPIPostResponseError | None = None
 
 
 # ------------------------------------- General other -------------------------------------
@@ -39,13 +39,13 @@ class OwnerGet(BaseModel):
 
 class LightMetadataGet(BaseModel):
     name: str
-    fixed_mired: Optional[int] = None
+    fixed_mired: int | None = None
     function: str
 
 
 class LightProductDataGet(BaseModel):
-    name: Optional[str] = None
-    archetype: Optional[str] = None
+    name: str | None = None
+    archetype: str | None = None
     function: str
 
 
@@ -55,7 +55,7 @@ class OnGet(BaseModel):
 
 class DimmingGet(BaseModel):
     brightness: float
-    min_dim_level: Optional[float] = None
+    min_dim_level: float | None = None
 
 
 class MirekSchemaGet(BaseModel):
@@ -64,7 +64,7 @@ class MirekSchemaGet(BaseModel):
 
 
 class ColorTemperatureGet(BaseModel):
-    mirek: Optional[int]
+    mirek: int | None
     mirek_valid: bool
     mirek_schema: MirekSchemaGet
 
@@ -82,7 +82,7 @@ class GamutGet(BaseModel):
 
 class ColorGet(BaseModel):
     xy: XYGet
-    gamut: Optional[GamutGet]
+    gamut: GamutGet | None
     gamut_type: str
 
 
@@ -105,7 +105,7 @@ class SignallingStatusGet(BaseModel):
 
 class SignallingGet(BaseModel):
     signal_values: list[str]
-    status: Optional[SignallingStatusGet] = None
+    status: SignallingStatusGet | None = None
 
 
 class GradientPointGet(BaseModel):
@@ -117,7 +117,7 @@ class GradientGet(BaseModel):
     mode: str
     points_capable: int
     mode_values: list[str]
-    pixel_count: Optional[int] = None
+    pixel_count: int | None = None
 
 
 class EffectsV2ActionGet(BaseModel):
@@ -134,15 +134,15 @@ class ParametersColorTemperatureGet(BaseModel):
 
 
 class ParametersGet(BaseModel):
-    color: Optional[ParametersColorGet] = None
-    color_temperature: Optional[ParametersColorTemperatureGet] = None
+    color: ParametersColorGet | None = None
+    color_temperature: ParametersColorTemperatureGet | None = None
     speed: float
 
 
 class EffectsV2StatusGet(BaseModel):
     effect: str
     effect_values: list[str]
-    parameters: Optional[ParametersGet] = None
+    parameters: ParametersGet | None = None
 
 
 class EffectsV2Get(BaseModel):
@@ -158,7 +158,7 @@ class TimedEffectsGet(BaseModel):
 
 class PowerupOnGet(BaseModel):
     mode: str
-    on: Optional[OnGet] = None
+    on: OnGet | None = None
 
 
 class PowerupDimmingDimmingGet(BaseModel):
@@ -167,7 +167,7 @@ class PowerupDimmingDimmingGet(BaseModel):
 
 class PowerupDimmingGet(BaseModel):
     mode: str
-    dimming: Optional[PowerupDimmingDimmingGet] = None
+    dimming: PowerupDimmingDimmingGet | None = None
 
 
 class PowerupColorColorTemperatureGet(BaseModel):
@@ -176,16 +176,16 @@ class PowerupColorColorTemperatureGet(BaseModel):
 
 class PowerupColorGet(BaseModel):
     mode: str
-    color_temperature: Optional[PowerupColorColorTemperatureGet] = None
-    color: Optional[XYGet] = None
+    color_temperature: PowerupColorColorTemperatureGet | None = None
+    color: XYGet | None = None
 
 
 class PowerupGet(BaseModel):
     preset: str
     configured: bool
     on: PowerupOnGet
-    dimming: Optional[PowerupDimmingGet] = None
-    color: Optional[PowerupColorGet] = None
+    dimming: PowerupDimmingGet | None = None
+    color: PowerupColorGet | None = None
 
 
 class LightGet(BaseModel):
@@ -193,28 +193,28 @@ class LightGet(BaseModel):
     id: str
     owner: OwnerGet
     metadata: LightMetadataGet
-    product_data: Optional[LightProductDataGet] = None
+    product_data: LightProductDataGet | None = None
     service_id: int
     on: OnGet
-    dimming: Optional[DimmingGet] = None
-    color_temperature: Optional[ColorTemperatureGet] = None
-    color: Optional[ColorGet] = None
-    dynamics: Optional[LightDynamicsGet] = None
-    alert: Optional[AlertGet] = None
-    signalling: Optional[SignallingGet] = None
+    dimming: DimmingGet | None = None
+    color_temperature: ColorTemperatureGet | None = None
+    color: ColorGet | None = None
+    dynamics: LightDynamicsGet | None = None
+    alert: AlertGet | None = None
+    signalling: SignallingGet | None = None
     mode: str
-    gradient: Optional[GradientGet] = None
-    effects_v2: Optional[EffectsV2Get] = None
-    timed_effects: Optional[TimedEffectsGet] = None
-    powerup: Optional[PowerupGet] = None
+    gradient: GradientGet | None = None
+    effects_v2: EffectsV2Get | None = None
+    timed_effects: TimedEffectsGet | None = None
+    powerup: PowerupGet | None = None
 
 
 # --------------------------------------- LightPut ---------------------------------------
 
 
 class LightMetadataPut(BaseModel):
-    name: Optional[str] = None
-    function: Optional[Literal["functional", "decorative", "mixed", "unknown"]]
+    name: str | None = None
+    function: Literal["functional", "decorative", "mixed", "unknown"] | None
 
 
 class IdentifyPut(BaseModel):
@@ -222,25 +222,25 @@ class IdentifyPut(BaseModel):
 
 
 class OnPut(BaseModel):
-    on: Optional[bool] = None
+    on: bool | None = None
 
 
 class DimmingPut(BaseModel):
-    brightness: Optional[float] = None
+    brightness: float | None = None
 
 
 class DimmingDeltaPut(BaseModel):
     action: Literal["up", "down", "stop"]
-    brightness_delta: Optional[int] = None
+    brightness_delta: int | None = None
 
 
 class ColorTemperaturePut(BaseModel):
-    mirek: Optional[int] = None
+    mirek: int | None = None
 
 
 class ColorTemperatureDeltaPut(BaseModel):
     action: Literal["up", "down", "stop"]
-    mirek_delta: Optional[int] = None
+    mirek_delta: int | None = None
 
 
 class XYPut(BaseModel):
@@ -249,12 +249,12 @@ class XYPut(BaseModel):
 
 
 class ColorPut(BaseModel):
-    xy: Optional[XYPut] = None
+    xy: XYPut | None = None
 
 
 class LightDynamicsPut(BaseModel):
-    duration: Optional[int] = None
-    speed: Optional[float] = None
+    duration: int | None = None
+    speed: float | None = None
 
 
 class AlertPut(BaseModel):
@@ -273,13 +273,13 @@ class GradientPointPut(BaseModel):
 
 class GradientPut(BaseModel):
     points: list[GradientPointPut]
-    mode: Optional[Literal["interpolated_palette", "interpolated_palette_mirrored", "random_pixelated"]] = None
+    mode: Literal["interpolated_palette", "interpolated_palette_mirrored", "random_pixelated"] | None = None
 
 
 class ParametersPut(BaseModel):
-    color: Optional[ColorPut] = None
-    color_temperature: Optional[ColorTemperaturePut] = None
-    speed: Optional[float] = None
+    color: ColorPut | None = None
+    color_temperature: ColorTemperaturePut | None = None
+    speed: float | None = None
 
 
 class EffectsV2ActionPut(BaseModel):
@@ -296,58 +296,58 @@ class EffectsV2ActionPut(BaseModel):
         "enchant",
         "no_effect",
     ]
-    parameters: Optional[ParametersPut] = None
+    parameters: ParametersPut | None = None
 
 
 class EffectsV2Put(BaseModel):
-    action: Optional[EffectsV2ActionPut] = None
+    action: EffectsV2ActionPut | None = None
 
 
 class TimedEffectsPut(BaseModel):
-    effect: Optional[Literal["sunrise", "sunset", "no_effect"]] = None
-    duration: Optional[int] = None
+    effect: Literal["sunrise", "sunset", "no_effect"] | None = None
+    duration: int | None = None
 
 
 class PowerupOnPut(BaseModel):
     mode: Literal["on", "toggle", "previous"]
-    on: Optional[OnPut] = None
+    on: OnPut | None = None
 
 
 class PowerupDimmingPut(BaseModel):
     mode: Literal["dimming", "previous"]
-    dimming: Optional[DimmingPut] = None
+    dimming: DimmingPut | None = None
 
 
 class PowerupColorPut(BaseModel):
     mode: Literal["color_temperature", "color", "previous"]
-    color_temperature: Optional[ColorTemperaturePut] = None
-    color: Optional[ColorPut] = None
+    color_temperature: ColorTemperaturePut | None = None
+    color: ColorPut | None = None
 
 
 class PowerupPut(BaseModel):
     preset: Literal["safety", "powerfail", "last_on_state", "custom"]
-    on: Optional[PowerupOnPut] = None
-    dimming: Optional[PowerupDimmingPut] = None
-    color: Optional[PowerupColorPut] = None
+    on: PowerupOnPut | None = None
+    dimming: PowerupDimmingPut | None = None
+    color: PowerupColorPut | None = None
 
 
 class LightPut(BaseModel):
-    type: Optional[Literal["light"]] = None
-    metadata: Optional[LightMetadataPut] = None
-    identify: Optional[IdentifyPut] = None
-    on: Optional[OnPut] = None
-    dimming: Optional[DimmingPut] = None
-    dimming_delta: Optional[DimmingDeltaPut] = None
-    color_temperature: Optional[ColorTemperaturePut] = None
-    color_temperature_delta: Optional[ColorTemperatureDeltaPut] = None
-    color: Optional[ColorPut] = None
-    dynamics: Optional[LightDynamicsPut] = None
-    alert: Optional[AlertPut] = None
-    signalling: Optional[SignallingPut] = None
-    gradient: Optional[GradientPut] = None
-    effects_v2: Optional[EffectsV2Put] = None
-    timed_effects: Optional[TimedEffectsPut] = None
-    powerup: Optional[PowerupPut] = None
+    type: Literal["light"] | None = None
+    metadata: LightMetadataPut | None = None
+    identify: IdentifyPut | None = None
+    on: OnPut | None = None
+    dimming: DimmingPut | None = None
+    dimming_delta: DimmingDeltaPut | None = None
+    color_temperature: ColorTemperaturePut | None = None
+    color_temperature_delta: ColorTemperatureDeltaPut | None = None
+    color: ColorPut | None = None
+    dynamics: LightDynamicsPut | None = None
+    alert: AlertPut | None = None
+    signalling: SignallingPut | None = None
+    gradient: GradientPut | None = None
+    effects_v2: EffectsV2Put | None = None
+    timed_effects: TimedEffectsPut | None = None
+    powerup: PowerupPut | None = None
 
 
 # --------------------------------------- SceneGet ---------------------------------------
@@ -376,14 +376,14 @@ class ActionGradientGet(BaseModel):
 
 
 class ActionParametersGet(BaseModel):
-    color: Optional[ParametersColorGet] = None
-    color_temperature: Optional[ParametersColorTemperatureGet] = None
-    speed: Optional[float] = None
+    color: ParametersColorGet | None = None
+    color_temperature: ParametersColorTemperatureGet | None = None
+    speed: float | None = None
 
 
 class ActionEffectsV2ActionGet(BaseModel):
     effect: str
-    parameters: Optional[ActionParametersGet] = None
+    parameters: ActionParametersGet | None = None
 
 
 class EffectsV2BasicGet(BaseModel):
@@ -391,17 +391,17 @@ class EffectsV2BasicGet(BaseModel):
 
 
 class ActionDynamicsGet(BaseModel):
-    duration: Optional[int] = None
+    duration: int | None = None
 
 
 class ActionActionGet(BaseModel):
-    on: Optional[OnGet] = None
-    dimming: Optional[ActionDimmingGet] = None
-    color: Optional[ActionColorGet] = None
-    color_temperature: Optional[ActionColorTemperatureGet] = None
-    gradient: Optional[ActionGradientGet] = None
-    effects_v2: Optional[EffectsV2BasicGet] = None
-    dynamics: Optional[ActionDynamicsGet] = None
+    on: OnGet | None = None
+    dimming: ActionDimmingGet | None = None
+    color: ActionColorGet | None = None
+    color_temperature: ActionColorTemperatureGet | None = None
+    gradient: ActionGradientGet | None = None
+    effects_v2: EffectsV2BasicGet | None = None
+    dynamics: ActionDynamicsGet | None = None
 
 
 class ActionGet(BaseModel):
@@ -444,8 +444,8 @@ class ImageGet(BaseModel):
 
 class SceneMetadataGet(BaseModel):
     name: str
-    image: Optional[ImageGet] = None
-    appdata: Optional[str] = None
+    image: ImageGet | None = None
+    appdata: str | None = None
 
 
 class GroupGet(BaseModel):
@@ -454,15 +454,15 @@ class GroupGet(BaseModel):
 
 
 class StatusGet(BaseModel):
-    active: Optional[str] = None
-    last_recall: Optional[str] = None  # TODO: Datetime
+    active: str | None = None
+    last_recall: str | None = None  # TODO: Datetime
 
 
 class SceneGet(BaseModel):
     type: Literal["scene"]
     id: str
     actions: list[ActionGet]
-    palette: Optional[PaletteGet] = None
+    palette: PaletteGet | None = None
     effects_v2: list[EffectsV2BasicGet] = []
     recall: dict  # TODO: Unsure
     metadata: SceneMetadataGet
@@ -481,17 +481,17 @@ class TargetPut(BaseModel):
 
 
 class SceneActionActionDynamicsPut(BaseModel):
-    duration: Optional[int] = None
+    duration: int | None = None
 
 
 class ActionActionPut(BaseModel):
-    on: Optional[OnPut] = None
-    dimming: Optional[DimmingPut] = None
-    color: Optional[ColorPut] = None
-    color_temperature: Optional[ColorTemperaturePut] = None
-    gradient: Optional[GradientPut] = None
-    effects_v2: Optional[EffectsV2Put] = None
-    dynamics: Optional[SceneActionActionDynamicsPut] = None
+    on: OnPut | None = None
+    dimming: DimmingPut | None = None
+    color: ColorPut | None = None
+    color_temperature: ColorTemperaturePut | None = None
+    gradient: GradientPut | None = None
+    effects_v2: EffectsV2Put | None = None
+    dynamics: SceneActionActionDynamicsPut | None = None
 
 
 class ActionPut(BaseModel):
@@ -517,24 +517,24 @@ class PalettePut(BaseModel):
 
 
 class RecallPut(BaseModel):
-    action: Optional[Literal["active", "dynamic", "static"]] = None
-    duration: Optional[int] = None
-    dimming: Optional[DimmingPut] = None
+    action: Literal["active", "dynamic", "static"] | None = None
+    duration: int | None = None
+    dimming: DimmingPut | None = None
 
 
 class SceneMetadataPut(BaseModel):
-    name: Optional[str] = None
-    appdata: Optional[str] = None
+    name: str | None = None
+    appdata: str | None = None
 
 
 class ScenePut(BaseModel):
-    type: Optional[Literal["scene"]] = None
-    actions: Optional[list[ActionPut]] = None
-    palette: Optional[PalettePut] = None
-    recall: Optional[RecallPut] = None
-    metadata: Optional[LightMetadataPut] = None
-    speed: Optional[float] = None
-    auto_dynamic: Optional[bool] = None
+    type: Literal["scene"] | None = None
+    actions: list[ActionPut] | None = None
+    palette: PalettePut | None = None
+    recall: RecallPut | None = None
+    metadata: LightMetadataPut | None = None
+    speed: float | None = None
+    auto_dynamic: bool | None = None
 
 
 # --------------------------------------- RoomGet ---------------------------------------
@@ -562,14 +562,14 @@ class ResourceIdentifierPut(BaseModel):
 
 
 class RoomMetadataPut(BaseModel):
-    name: Optional[str] = None
-    archetype: Optional[str] = None
+    name: str | None = None
+    archetype: str | None = None
 
 
 class RoomPut(BaseModel):
-    type: Optional[Literal["room"]] = None
-    children: Optional[list[ResourceIdentifierPut]] = None
-    metadata: Optional[RoomMetadataPut]
+    type: Literal["room"] | None = None
+    children: list[ResourceIdentifierPut] | None = None
+    metadata: RoomMetadataPut | None
 
 
 # ----------------------------------- GroupedLightGet -----------------------------------
@@ -578,7 +578,7 @@ class RoomPut(BaseModel):
 # Hue seems to give various entities as {} in grouped lights, this type auto converts them to None for consistency with
 # the others
 T = TypeVar("T")
-LeniantOptional = Annotated[Optional[T], BeforeValidator(lambda x: x or None)]
+LeniantOptional = Annotated[T | None, BeforeValidator(lambda x: x or None)]
 
 
 class GroupedLightDimmingGet(BaseModel):
@@ -607,14 +607,14 @@ class GroupedLightGet(BaseModel):
     type: Literal["grouped_light"]
     id: str
     owner: OwnerGet
-    on: Optional[OnGet] = None
-    dimming: Optional[GroupedLightDimmingGet] = None
+    on: OnGet | None = None
+    dimming: GroupedLightDimmingGet | None = None
     dimming_delta: LeniantOptional[DimmingDeltaGet] = None
     color_temperature: LeniantOptional[ColorTemperatureGet] = None
     color_temperature_delta: LeniantOptional[ColorTemperatureDeltaGet] = None
     color: LeniantOptional[ColorGet] = None
-    alert: Optional[AlertGet] = None
-    signalling: Optional[GroupedLightSignalingGet] = None
+    alert: AlertGet | None = None
+    signalling: GroupedLightSignalingGet | None = None
     dyanmics: LeniantOptional[GroupedLightDynamicsGet] = None
 
 
@@ -622,20 +622,20 @@ class GroupedLightGet(BaseModel):
 
 
 class GroupedLightDynamicsPut(BaseModel):
-    duration: Optional[int] = None
+    duration: int | None = None
 
 
 class GroupedLightPut(BaseModel):
-    type: Optional[Literal["grouped_light"]] = None
-    on: Optional[OnPut] = None
-    dimming: Optional[DimmingPut] = None
-    dimming_delta: Optional[DimmingDeltaPut] = None
-    color_temperature: Optional[ColorTemperaturePut] = None
-    color_temperature_delta: Optional[ColorTemperatureDeltaPut] = None
-    color: Optional[ColorPut] = None
-    alert: Optional[AlertPut] = None
-    signaling: Optional[SignallingPut] = None
-    dyanmics: Optional[GroupedLightDynamicsPut] = None
+    type: Literal["grouped_light"] | None = None
+    on: OnPut | None = None
+    dimming: DimmingPut | None = None
+    dimming_delta: DimmingDeltaPut | None = None
+    color_temperature: ColorTemperaturePut | None = None
+    color_temperature_delta: ColorTemperatureDeltaPut | None = None
+    color: ColorPut | None = None
+    alert: AlertPut | None = None
+    signaling: SignallingPut | None = None
+    dyanmics: GroupedLightDynamicsPut | None = None
 
 
 # -------------------------------------- DeviceGet --------------------------------------
@@ -648,7 +648,7 @@ class DeviceProductDataGet(BaseModel):
     product_archetype: str
     certified: bool
     software_version: str
-    hardware_platform_type: Optional[str] = None
+    hardware_platform_type: str | None = None
 
 
 class DeviceMetadataGet(BaseModel):
@@ -672,7 +672,7 @@ class DeviceGet(BaseModel):
     id: str
     product_data: DeviceProductDataGet
     metadata: DeviceMetadataGet
-    identify: Optional[dict] = None
-    usertest: Optional[UserTestGet] = None
-    device_mode: Optional[DeviceModeGet] = None
+    identify: dict | None = None
+    usertest: UserTestGet | None = None
+    device_mode: DeviceModeGet | None = None
     services: list[ResourceIdentifierGet]

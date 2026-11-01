@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel, SecretStr
 from sqlalchemy import URL
 
@@ -7,12 +5,12 @@ from sqlalchemy import URL
 class DatabaseSettings(BaseModel):
     """Setting required for connecting to a database"""
 
-    driver: Optional[str] = None
-    username: Optional[str] = None
-    password: Optional[SecretStr] = None
-    host: Optional[str] = None
-    port: Optional[int] = None
-    name: Optional[str] = None
+    driver: str | None = None
+    username: str | None = None
+    password: SecretStr | None = None
+    host: str | None = None
+    port: int | None = None
+    name: str | None = None
 
 
 def get_database_url(database_settings: DatabaseSettings) -> URL:

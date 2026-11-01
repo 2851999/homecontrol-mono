@@ -1,5 +1,5 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator, Optional
 
 from homecontrol_base_api.database.core import get_database
 
@@ -18,8 +18,8 @@ class ControllerService:
     _ac_manager: ACManager
     _hue_bridge_manager: HueBridgeManager
 
-    _devices: Optional[DeviceService] = None
-    _rooms: Optional[RoomService] = None
+    _devices: DeviceService | None = None
+    _rooms: RoomService | None = None
 
     def __init__(
         self,
