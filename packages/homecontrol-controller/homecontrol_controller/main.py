@@ -9,6 +9,7 @@ from homecontrol_controller.database.core import ControllerDatabaseSession
 from homecontrol_controller.devices.aircon.manager import ACManager
 from homecontrol_controller.devices.hue.manager import HueBridgeManager
 from homecontrol_controller.routers.devices.core import devices
+from homecontrol_controller.routers.room_actions import room_actions
 from homecontrol_controller.routers.rooms import rooms
 
 
@@ -39,3 +40,4 @@ app.add_exception_handler(BaseAPIError, handle_base_api_error)
 
 app.include_router(devices)
 app.include_router(rooms)
+app.include_router(room_actions)

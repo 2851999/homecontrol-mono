@@ -27,4 +27,4 @@ services:
       - ./database.db:/homecontrol-auth/database.db
     env_file: ".env"
     ports:
-      - "8000:8000"
+      - "8001:8000"

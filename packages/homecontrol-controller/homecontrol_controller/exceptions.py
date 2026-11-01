@@ -29,7 +29,7 @@ class DeviceAuthenticationError(BaseAPIError):
 class DeviceInvalidStateError(BaseAPIError):
     """Raised when attempting to change the state of a device to be invalid."""
 
-    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
 
 
 class HueBridgeButtonNotPressedError(BaseAPIError):

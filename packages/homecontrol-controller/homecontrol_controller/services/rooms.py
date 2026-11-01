@@ -14,7 +14,7 @@ class RoomService:
         self._session = session
 
     async def create(self, room: RoomPost) -> Room:
-        """Creayes a Room.
+        """Creates a Room.
 
         :param room: Room to create.
         :return: Created Room.

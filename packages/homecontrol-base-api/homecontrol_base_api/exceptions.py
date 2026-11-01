@@ -32,7 +32,7 @@ class RecordNotFoundError(DatabaseError):
 class InvalidUUIDError(BaseAPIError):
     """Raised when attempting to convert an invalid string to a UUID"""
 
-    status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
+    status_code = status.HTTP_422_UNPROCESSABLE_CONTENT
 
 
 async def handle_base_api_error(_: Request, exc: BaseAPIError) -> JSONResponse:

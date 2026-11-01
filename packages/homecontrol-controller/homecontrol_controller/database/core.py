@@ -1,9 +1,8 @@
-from typing import Optional
-
 from homecontrol_base_api.database.core import DatabaseSession
 
 from homecontrol_controller.database.ac_devices import ACDevicesSession
 from homecontrol_controller.database.hue_bridge_devices import HueBridgeDevicesSession
+from homecontrol_controller.database.room_actions import RoomActionsSession
 from homecontrol_controller.database.rooms import RoomsSession
 
 
@@ -13,6 +12,7 @@ class ControllerDatabaseSession(DatabaseSession):
     _ac_devices: ACDevicesSession | None = None
     _hue_bridge_devices: HueBridgeDevicesSession | None = None
     _rooms: RoomsSession | None = None
+    _room_actions: RoomActionsSession | None = None
 
     @property
     def ac_devices(self) -> ACDevicesSession:
@@ -31,3 +31,9 @@ class ControllerDatabaseSession(DatabaseSession):
         if not self._rooms:
             self._rooms = RoomsSession(self._session)
         return self._rooms
+
+    @property
+    def room_actions(self) -> RoomActionsSession:
+        if not self._room_actions:
+            self._room_actions = RoomActionsSession(self._session)
+        return self._room_actions

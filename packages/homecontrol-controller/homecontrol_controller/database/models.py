@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from sqlalchemy import JSON, BigInteger, Integer
+from sqlalchemy import JSON, BigInteger, ForeignKey, Integer
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.types import String, Uuid
 
@@ -47,3 +47,15 @@ class RoomInDB(Base):
     # Could use JSONB here when using just PostgreSQL, but for compatibility
     # use plain JSON for now
     controllers: Mapped[JSON] = mapped_column(JSON)
+
+
+class RoomActionInDB(Base):
+    """Room action in the databse."""
+
+    __tablename__ = "room_actions"
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    name: Mapped[str] = mapped_column(String, unique=True, index=True)
+    room_id: Mapped[UUID] = mapped_column(Uuid, ForeignKey("rooms.id"))
+    icon: Mapped[str] = mapped_column(String)
+    tasks: Mapped[JSON] = mapped_column(JSON)

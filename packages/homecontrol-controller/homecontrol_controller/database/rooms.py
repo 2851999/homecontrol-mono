@@ -15,7 +15,7 @@ class RoomsSession(DatabaseSession):
         """Creates a Room in the database.
 
         :param room: Room to create.
-        :returnes: Created room.
+        :returns: Created room.
         """
 
         self._session.add(room)
